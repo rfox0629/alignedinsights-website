@@ -1,31 +1,10 @@
 export const intakeSections = [
   {
     id: "organization_profile",
-    title: "Organization Profile",
-    intro: "Basic context about the organization and operating size.",
+    title: "Operating Profile",
+    intro: "A few operating details we need for the deeper financial review.",
     fields: [
-      { name: "legalOrganizationName", label: "Legal organization name", type: "text", required: true },
-      { name: "dbaName", label: "DBA/common name", type: "text" },
-      { name: "ein", label: "EIN", type: "text" },
-      { name: "website", label: "Website", type: "url" },
-      { name: "primaryContactName", label: "Primary contact name", type: "text", required: true },
-      { name: "primaryContactEmail", label: "Primary contact email", type: "email", required: true },
-      { name: "contactRole", label: "Contact role", type: "text" },
-      {
-        name: "organizationType",
-        label: "Organization type",
-        type: "select",
-        required: true,
-        options: ["Church", "Ministry", "Nonprofit", "School", "Service Business", "Other"],
-      },
       { name: "fiscalYearEnd", label: "Fiscal year end", type: "text" },
-      {
-        name: "annualRevenueRange",
-        label: "Annual revenue range",
-        type: "select",
-        required: true,
-        options: ["Under $250K", "$250K-$500K", "$500K-$1M", "$1M-$3M", "$3M-$10M", "$10M+"],
-      },
       { name: "employeeCount", label: "Number of employees", type: "number" },
       { name: "contractorCount", label: "Number of contractors", type: "number" },
       {
@@ -34,8 +13,6 @@ export const intakeSections = [
         type: "select",
         options: ["Under 100", "100-250", "250-500", "500-1,000", "1,000+"],
       },
-      { name: "bankAccountCount", label: "Number of bank accounts", type: "number" },
-      { name: "creditCardCount", label: "Number of credit cards", type: "number" },
     ],
   },
   {
@@ -90,7 +67,6 @@ export const intakeSections = [
     intro: "Payroll cadence, staffing shape, and reimbursement flow.",
     fields: [
       { name: "payrollFrequency", label: "Payroll frequency", type: "select", options: ["Weekly", "Biweekly", "Semimonthly", "Monthly", "Other"] },
-      { name: "employeeCount", label: "Number of employees", type: "number" },
       { name: "ministerCount", label: "Number of ministers/clergy", type: "number" },
       { name: "housingAllowance", label: "Do you use housing allowance?", type: "select", options: ["Yes", "No", "Not sure"] },
       { name: "benefitsOffered", label: "Benefits offered?", type: "select", options: ["Yes", "No", "Not sure"] },
@@ -109,7 +85,7 @@ export const intakeSections = [
       { name: "campaignTracking", label: "Do you track campaigns separately?", type: "select", options: ["Yes", "No", "Not sure"] },
       { name: "grantsReceived", label: "Do you receive grants?", type: "select", options: ["Yes", "No", "Not sure"] },
       { name: "givingReconcilesMonthly", label: "Does donor giving reconcile to accounting monthly?", type: "select", options: ["Yes", "No", "Not sure"] },
-      { name: "fundNotes", label: "Notes about funds, restrictions, or campaigns", type: "textarea" },
+      { name: "fundNotes", label: "Notes about funds, restrictions, or campaigns", type: "textarea", optional: true },
     ],
   },
   {
@@ -123,7 +99,7 @@ export const intakeSections = [
       { name: "linesOfCredit", label: "Lines of credit?", type: "select", options: ["Yes", "No"] },
       { name: "reservePolicy", label: "Do you have a reserve policy?", type: "select", options: ["Yes", "No", "Not sure"] },
       { name: "cashReserveMonths", label: "Current cash reserve in months", type: "select", options: ["Under 1 month", "1-3 months", "3-6 months", "6-12 months", "12+ months", "Not sure"] },
-      { name: "cashNotes", label: "Notes about debt, reserves, or cash planning", type: "textarea" },
+      { name: "cashNotes", label: "Notes about debt, reserves, or cash planning", type: "textarea", optional: true },
     ],
   },
   {
@@ -139,7 +115,7 @@ export const intakeSections = [
       { name: "boardReview", label: "Are monthly financials reviewed by board/elders?", type: "select", options: ["Yes", "No", "Not sure"] },
       { name: "writtenPolicies", label: "Do you have written financial policies?", type: "select", options: ["Yes", "No", "Not sure"] },
       { name: "lastAudit", label: "Last audit, review, or compilation?", type: "select", options: ["Within 12 months", "1-3 years ago", "3+ years ago", "Never", "Not sure"] },
-      { name: "cleanupIssues", label: "Any known cleanup issues?", type: "textarea" },
+      { name: "cleanupIssues", label: "Any known cleanup issues?", type: "textarea", optional: true },
     ],
   },
   {
@@ -156,6 +132,13 @@ export const intakeSections = [
     ],
   },
 ] as const;
+
+export type IntakeSection = (typeof intakeSections)[number];
+export type IntakeField = IntakeSection["fields"][number];
+
+export function isIntakeFieldRequired(field: IntakeField) {
+  return !("optional" in field && field.optional === true);
+}
 
 export const uploadFields = [
   "Most recent Statement of Activity / P&L",

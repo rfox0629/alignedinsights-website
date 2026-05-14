@@ -48,6 +48,9 @@ export default async function IntakePage({ params, searchParams }: PageProps) {
     );
   }
 
+  const contextOrganization = link.inquiry?.organization_name || link.organization_name || "Organization intake";
+  const contextEmail = link.inquiry?.email || link.contact_email;
+
   return (
     <main className="intake-page">
       <div className="intake-container">
@@ -59,8 +62,8 @@ export default async function IntakePage({ params, searchParams }: PageProps) {
             This private form gives us the context needed to prepare a simple Financial Insights Report for your team.
           </p>
           <div className="intake-context">
-            <span>{link.organization_name || "Organization intake"}</span>
-            {link.contact_email ? <span>{link.contact_email}</span> : null}
+            <span>{contextOrganization}</span>
+            {contextEmail ? <span>{contextEmail}</span> : null}
           </div>
         </header>
         <IntakeForm token={token} />

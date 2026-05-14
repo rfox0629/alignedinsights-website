@@ -1,7 +1,15 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { allowedUploadTypes, intakeSections, intakeStorageBucket, maxUploadSizeBytes, uploadFields } from "@/lib/intake/config";
+import {
+  allowedUploadTypes,
+  intakeSections,
+  intakeStorageBucket,
+  isIntakeFieldRequired,
+  maxUploadSizeBytes,
+  uploadFields,
+  type IntakeSection,
+} from "@/lib/intake/config";
 import { getValidatedIntakeLink } from "@/lib/intake/server";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -13,7 +21,7 @@ function fieldName(sectionId: string, name: string) {
   return `${sectionId}.${name}`;
 }
 
-function readSection(formData: FormData, section: (typeof intakeSections)[number]) {
+function readSection(formData: FormData, section: IntakeSection) {
   const data: Record<string, string | string[]> = {};
 
   for (const field of section.fields) {
@@ -30,6 +38,52 @@ function readSection(formData: FormData, section: (typeof intakeSections)[number
   }
 
   return data;
+}
+
+function validateSection(data: Record<string, string | string[]>, section: IntakeSection) {
+  for (const field of section.fields) {
+    const value = data[field.name];
+
+    if (isIntakeFieldRequired(field)) {
+      if (field.type === "checkbox" && (!Array.isArray(value) || !value.length)) {
+        return `Please complete ${section.title}.`;
+      }
+
+      if (field.type !== "checkbox" && !String(value ?? "").trim()) {
+        return `Please complete ${section.title}.`;
+      }
+    }
+
+    if ((field.type === "select" || field.type === "checkbox") && value) {
+      const values = Array.isArray(value) ? value : [String(value)];
+      const invalid = values.some((item) => !field.options.some((option) => option === item));
+
+      if (invalid) {
+        return `Please use valid options in ${section.title}.`;
+      }
+    }
+  }
+
+  return "";
+}
+
+function buildInquirySnapshot(link: NonNullable<Awaited<ReturnType<typeof getValidatedIntakeLink>>["link"]>) {
+  if (!link.inquiry) {
+    return {
+      contactEmail: link.contact_email,
+      organizationName: link.organization_name,
+    };
+  }
+
+  return {
+    annualRevenueRange: link.inquiry.annual_revenue,
+    contactEmail: link.inquiry.email,
+    contactName: `${link.inquiry.first_name} ${link.inquiry.last_name}`.trim(),
+    mainAreas: link.inquiry.looking_for,
+    organizationName: link.inquiry.organization_name,
+    organizationType: link.inquiry.organization_type,
+    phone: link.inquiry.phone,
+  };
 }
 
 function safeFileName(name: string) {
@@ -55,11 +109,13 @@ export async function submitIntake(_: IntakeActionState, formData: FormData): Pr
     return { error: "This intake link is no longer available." };
   }
 
-  const organizationProfile = readSection(formData, intakeSections[0]);
+  const sectionData = intakeSections.map((section) => readSection(formData, section));
 
-  for (const field of intakeSections[0].fields) {
-    if ("required" in field && field.required && !String(organizationProfile[field.name] ?? "").trim()) {
-      return { error: "Please complete the required organization profile fields." };
+  for (let index = 0; index < intakeSections.length; index += 1) {
+    const validationError = validateSection(sectionData[index], intakeSections[index]);
+
+    if (validationError) {
+      return { error: validationError };
     }
   }
 
@@ -80,17 +136,27 @@ export async function submitIntake(_: IntakeActionState, formData: FormData): Pr
   }
 
   const supabase = getSupabaseAdminClient();
+  const inquiryId = link.inquiry_id || link.inquiry?.id || null;
+
+  if (inquiryId && !link.inquiry_id) {
+    await supabase.from("financial_intake_links").update({ inquiry_id: inquiryId }).eq("id", link.id);
+  }
+
   const submissionPayload = {
+    inquiry_id: inquiryId,
     link_id: link.id,
     token,
-    organization_profile: organizationProfile,
-    financial_systems: readSection(formData, intakeSections[1]),
-    reporting_visibility: readSection(formData, intakeSections[2]),
-    payroll_staffing: readSection(formData, intakeSections[3]),
-    giving_funds: readSection(formData, intakeSections[4]),
-    banking_cash_debt: readSection(formData, intakeSections[5]),
-    internal_controls: readSection(formData, intakeSections[6]),
-    pain_points_goals: readSection(formData, intakeSections[7]),
+    organization_profile: {
+      inquiry: buildInquirySnapshot(link),
+      ...sectionData[0],
+    },
+    financial_systems: sectionData[1],
+    reporting_visibility: sectionData[2],
+    payroll_staffing: sectionData[3],
+    giving_funds: sectionData[4],
+    banking_cash_debt: sectionData[5],
+    internal_controls: sectionData[6],
+    pain_points_goals: sectionData[7],
     uploads: {},
   };
 

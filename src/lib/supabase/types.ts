@@ -61,6 +61,7 @@ export type Database = {
       financial_intake_links: {
         Row: {
           id: string;
+          inquiry_id: string | null;
           token: string;
           contact_email: string | null;
           organization_name: string | null;
@@ -71,6 +72,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
+          inquiry_id?: string | null;
           token: string;
           contact_email?: string | null;
           organization_name?: string | null;
@@ -80,6 +82,7 @@ export type Database = {
           submitted_at?: string | null;
         };
         Update: {
+          inquiry_id?: string | null;
           token?: string;
           contact_email?: string | null;
           organization_name?: string | null;
@@ -87,12 +90,21 @@ export type Database = {
           expires_at?: string | null;
           submitted_at?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "financial_intake_links_inquiry_id_fkey";
+            columns: ["inquiry_id"];
+            isOneToOne: false;
+            referencedRelation: "aligned_insights_inquiries";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       financial_intake_submissions: {
         Row: {
           id: string;
           link_id: string | null;
+          inquiry_id: string | null;
           token: string;
           organization_profile: Json | null;
           financial_systems: Json | null;
@@ -109,6 +121,7 @@ export type Database = {
         Insert: {
           id?: string;
           link_id?: string | null;
+          inquiry_id?: string | null;
           token: string;
           organization_profile?: Json | null;
           financial_systems?: Json | null;
@@ -123,10 +136,18 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          inquiry_id?: string | null;
           uploads?: Json | null;
           updated_at?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: "financial_intake_submissions_inquiry_id_fkey";
+            columns: ["inquiry_id"];
+            isOneToOne: false;
+            referencedRelation: "aligned_insights_inquiries";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "financial_intake_submissions_link_id_fkey";
             columns: ["link_id"];

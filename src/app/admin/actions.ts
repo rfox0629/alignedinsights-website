@@ -17,6 +17,10 @@ type AdminActionResult<T = unknown> = {
 };
 
 type InquiryUpdate = Database["public"]["Tables"]["aligned_insights_inquiries"]["Update"];
+type InquiryRow = Database["public"]["Tables"]["aligned_insights_inquiries"]["Row"];
+type IntakeLinkRow = Database["public"]["Tables"]["financial_intake_links"]["Row"];
+type IntakeSubmissionRow = Database["public"]["Tables"]["financial_intake_submissions"]["Row"];
+type IntakeFileRow = Database["public"]["Tables"]["financial_intake_files"]["Row"];
 
 function getAdminPassword() {
   return process.env.ADMIN_PORTAL_PASSWORD?.trim() || "";
@@ -112,6 +116,99 @@ function requireAdmin(token: string) {
   }
 }
 
+async function loadIntakeLinksForInquiries(
+  supabase: ReturnType<typeof getSupabaseAdminClient>,
+  inquiries: InquiryRow[],
+) {
+  const inquiryIds = inquiries.map((inquiry) => inquiry.id);
+  const emails = Array.from(new Set(inquiries.map((inquiry) => inquiry.email).filter(Boolean)));
+  const linksById = new Map<string, IntakeLinkRow>();
+
+  if (inquiryIds.length) {
+    const { data, error } = await supabase
+      .from("financial_intake_links")
+      .select("*")
+      .in("inquiry_id", inquiryIds)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    data?.forEach((link) => linksById.set(link.id, link));
+  }
+
+  if (emails.length) {
+    const { data, error } = await supabase
+      .from("financial_intake_links")
+      .select("*")
+      .in("contact_email", emails)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    data?.forEach((link) => linksById.set(link.id, link));
+  }
+
+  const links = Array.from(linksById.values());
+  const linkIds = links.map((link) => link.id);
+  const submissionsByLinkId = new Map<string, (IntakeSubmissionRow & { files: IntakeFileRow[] })[]>();
+
+  if (linkIds.length) {
+    const { data: submissions, error: submissionError } = await supabase
+      .from("financial_intake_submissions")
+      .select("*")
+      .in("link_id", linkIds)
+      .order("created_at", { ascending: false });
+
+    if (submissionError) {
+      throw submissionError;
+    }
+
+    const submissionIds = (submissions || []).map((submission) => submission.id);
+    const filesBySubmissionId = new Map<string, IntakeFileRow[]>();
+
+    if (submissionIds.length) {
+      const { data: files, error: fileError } = await supabase
+        .from("financial_intake_files")
+        .select("*")
+        .in("submission_id", submissionIds)
+        .order("created_at", { ascending: false });
+
+      if (fileError) {
+        throw fileError;
+      }
+
+      for (const file of files || []) {
+        if (!file.submission_id) continue;
+
+        filesBySubmissionId.set(file.submission_id, [...(filesBySubmissionId.get(file.submission_id) || []), file]);
+      }
+    }
+
+    for (const submission of submissions || []) {
+      if (!submission.link_id) continue;
+
+      submissionsByLinkId.set(submission.link_id, [
+        ...(submissionsByLinkId.get(submission.link_id) || []),
+        { ...submission, files: filesBySubmissionId.get(submission.id) || [] },
+      ]);
+    }
+  }
+
+  return inquiries.map((inquiry) => ({
+    ...inquiry,
+    intake_links: links
+      .filter((link) => link.inquiry_id === inquiry.id || (!link.inquiry_id && link.contact_email === inquiry.email))
+      .map((link) => ({
+        ...link,
+        submissions: submissionsByLinkId.get(link.id) || [],
+      })),
+  }));
+}
+
 export async function authenticateAdmin(password: string): Promise<AdminActionResult<{ token: string }>> {
   const configuredPassword = getAdminPassword();
 
@@ -153,7 +250,7 @@ export async function getAdminInquiries(token: string): Promise<AdminActionResul
       };
     }
 
-    return { data: data || [], success: true };
+    return { data: await loadIntakeLinksForInquiries(supabase, data || []), success: true };
   } catch (error) {
     if (error instanceof Error && error.message.includes("admin session")) {
       return { error: error.message, success: false };
@@ -175,7 +272,7 @@ export async function updateInquiryStatus({
   sentBy?: string;
   status: InquiryStatus;
   token: string;
-}): Promise<AdminActionResult<AdminInquiry>> {
+}): Promise<AdminActionResult<InquiryRow>> {
   try {
     requireAdmin(token);
 

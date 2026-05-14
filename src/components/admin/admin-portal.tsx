@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 
 import { authenticateAdmin, getAdminInquiries, updateInquiryStatus } from "@/app/admin/actions";
-import { inquiryStatuses, type AdminInquiry, type InquiryStatus } from "@/lib/admin/inquiries";
+import { inquiryStatuses, type AdminInquiry, type AdminIntakeSubmission, type InquiryStatus } from "@/lib/admin/inquiries";
+import { intakeSections } from "@/lib/intake/config";
+import type { Database, Json } from "@/lib/supabase/types";
 
 type AdminPortalProps = {
   title?: string;
@@ -13,6 +15,7 @@ const sessionKey = "aligned-insights-admin-session";
 const teamMemberKey = "aligned-insights-admin-team-member";
 
 const quickStatuses: InquiryStatus[] = ["Intake Sent", "Reviewing", "Completed"];
+type InquiryRow = Database["public"]["Tables"]["aligned_insights_inquiries"]["Row"];
 
 export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
   const [authError, setAuthError] = useState("");
@@ -122,9 +125,9 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
     setSelectedId(null);
   }
 
-  function applyInquiryUpdate(updatedInquiry: AdminInquiry) {
+  function applyInquiryUpdate(updatedInquiry: InquiryRow) {
     setInquiries((current) =>
-      current.map((inquiry) => (inquiry.id === updatedInquiry.id ? updatedInquiry : inquiry)),
+      current.map((inquiry) => (inquiry.id === updatedInquiry.id ? { ...inquiry, ...updatedInquiry } : inquiry)),
     );
     setSelectedId(updatedInquiry.id);
   }
@@ -365,6 +368,8 @@ function InquiryDrawer({
           </section>
         ) : null}
 
+        <IntakeSummary inquiry={inquiry} />
+
         <section className="admin-status-panel">
           <div className="admin-panel-head">
             <div>
@@ -444,6 +449,126 @@ function HelpPills({ values }: { values: string[] }) {
       )}
     </div>
   );
+}
+
+function IntakeSummary({ inquiry }: { inquiry: AdminInquiry }) {
+  const latestSubmission = getLatestIntakeSubmission(inquiry);
+  const latestLink = inquiry.intake_links[0];
+
+  return (
+    <section className="admin-intake-panel">
+      <div className="admin-panel-head">
+        <div>
+          <h3>Financial intake</h3>
+          <p>
+            {latestSubmission
+              ? `Submitted ${formatDateTime(latestSubmission.created_at)}`
+              : latestLink
+                ? `Link ${latestLink.status}`
+                : "No private intake submitted yet."}
+          </p>
+        </div>
+        {latestSubmission ? <StatusBadge status="Completed" /> : null}
+      </div>
+
+      {!latestSubmission ? (
+        <div className="admin-empty admin-empty-compact">
+          The original request is saved above. Deeper intake answers will appear here after the private form is submitted.
+        </div>
+      ) : (
+        <div className="admin-intake-sections">
+          {intakeSections.map((section) => (
+            <IntakeSectionSummary
+              data={getSubmissionSectionData(latestSubmission, section.id)}
+              fields={section.fields}
+              key={section.id}
+              title={section.title}
+            />
+          ))}
+          <UploadsSummary submission={latestSubmission} />
+        </div>
+      )}
+    </section>
+  );
+}
+
+function IntakeSectionSummary({
+  data,
+  fields,
+  title,
+}: {
+  data: Record<string, Json | undefined>;
+  fields: (typeof intakeSections)[number]["fields"];
+  title: string;
+}) {
+  return (
+    <section className="admin-intake-section">
+      <h4>{title}</h4>
+      <div className="admin-intake-grid">
+        {fields.map((field) => (
+          <DetailItem key={field.name} label={field.label} value={formatJsonValue(data[field.name])} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function UploadsSummary({ submission }: { submission: AdminIntakeSubmission }) {
+  if (!submission.files.length) {
+    return (
+      <section className="admin-intake-section">
+        <h4>Uploads</h4>
+        <div className="admin-empty admin-empty-compact">No files uploaded.</div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="admin-intake-section">
+      <h4>Uploads</h4>
+      <div className="admin-intake-grid">
+        {submission.files.map((file) => (
+          <DetailItem
+            key={file.id}
+            label={file.file_label || "Document"}
+            value={file.file_name || "Uploaded file"}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function getLatestIntakeSubmission(inquiry: AdminInquiry) {
+  return inquiry.intake_links
+    .flatMap((link) => link.submissions)
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+}
+
+function getSubmissionSectionData(submission: AdminIntakeSubmission, sectionId: (typeof intakeSections)[number]["id"]) {
+  const value = submission[sectionId];
+
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value as Record<string, Json | undefined>;
+  }
+
+  return {};
+}
+
+function formatJsonValue(value: Json | undefined) {
+  if (Array.isArray(value)) {
+    return value.length ? value.map(String).join(", ") : "Not provided";
+  }
+
+  if (value === null || value === undefined || value === "") {
+    return "Not provided";
+  }
+
+  if (typeof value === "object") {
+    return "Saved with inquiry record";
+  }
+
+  return String(value);
 }
 
 function StatusBadge({ status }: { status: string }) {

@@ -41,6 +41,8 @@ Create a private Financial Insights intake link locally with:
 npm run intake:create-link -- contact@example.com "Organization Name" 2026-06-30
 ```
 
+The script automatically connects the link to the latest matching inquiry by email when possible. You can also pass an inquiry ID as the final argument.
+
 The lightweight admin portal is available at `/admin` and `/admin/inquiries` after setting `ADMIN_PORTAL_PASSWORD`.
 
 ## Structure

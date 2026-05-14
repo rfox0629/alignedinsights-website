@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { submitIntake } from "@/app/intake/[token]/actions";
 import { PremiumSelect } from "@/components/site/premium-select";
-import { intakeSections, maxUploadSizeBytes, uploadFields } from "@/lib/intake/config";
+import { intakeSections, isIntakeFieldRequired, maxUploadSizeBytes, uploadFields } from "@/lib/intake/config";
 
 function fieldName(sectionId: string, name: string) {
   return `${sectionId}.${name}`;
@@ -90,13 +90,13 @@ function FieldRenderer({
 }) {
   const name = fieldName(sectionId, field.name);
   const isWide = field.type === "textarea" || field.type === "checkbox";
-  const required = "required" in field && field.required;
+  const required = isIntakeFieldRequired(field);
 
   if (field.type === "textarea") {
     return (
       <label className="intake-field intake-field-wide">
-        <span>{field.label}</span>
-        <textarea name={name} rows={4} />
+        <span>{field.label}{required ? " *" : ""}</span>
+        <textarea name={name} required={required} rows={4} />
       </label>
     );
   }
@@ -119,7 +119,7 @@ function FieldRenderer({
   if (field.type === "checkbox") {
     return (
       <fieldset className="intake-field intake-field-wide intake-checks">
-        <legend>{field.label}</legend>
+        <legend>{field.label}{required ? " *" : ""}</legend>
         <div>
           {field.options.map((option) => (
             <label key={option}>
