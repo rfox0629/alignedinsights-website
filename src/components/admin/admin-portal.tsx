@@ -213,6 +213,7 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
                 <th>Contact Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th>Help Needed</th>
                 <th>Submitted Date</th>
                 <th>Status</th>
                 <th aria-label="Actions" />
@@ -230,7 +231,10 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
                     <td>
                       <a href={`mailto:${inquiry.email}`}>{inquiry.email}</a>
                     </td>
-                    <td>{inquiry.phone || "Not provided"}</td>
+                    <td>{inquiry.phone}</td>
+                    <td>
+                      <HelpPills values={inquiry.looking_for} />
+                    </td>
                     <td>{formatDate(inquiry.created_at)}</td>
                     <td>
                       <StatusBadge status={inquiry.status} />
@@ -244,7 +248,7 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7}>
+                  <td colSpan={8}>
                     <div className="admin-empty">No inquiries yet.</div>
                   </td>
                 </tr>
@@ -312,10 +316,13 @@ function InquiryDrawer({
         </header>
 
         <section className="admin-detail-grid">
-          <DetailItem label="Phone" value={inquiry.phone || "Not provided"} />
+          <DetailItem label="Phone" value={inquiry.phone} />
           <DetailItem label="Organization type" value={inquiry.organization_type} />
           <DetailItem label="Annual revenue" value={inquiry.annual_revenue} />
-          <DetailItem label="Looking for" value={inquiry.looking_for || "Not provided"} />
+          <div className="admin-detail-item">
+            <span>Help needed</span>
+            <HelpPills values={inquiry.looking_for} />
+          </div>
           <DetailItem label="Submitted" value={formatDateTime(inquiry.created_at)} />
           <DetailItem label="Source" value={inquiry.source} />
         </section>
@@ -388,6 +395,22 @@ function DetailItem({ label, value }: { label: string; value: string }) {
     <div className="admin-detail-item">
       <span>{label}</span>
       <strong>{value}</strong>
+    </div>
+  );
+}
+
+function HelpPills({ values }: { values: string[] }) {
+  return (
+    <div className="admin-help-pills">
+      {values.length ? (
+        values.map((value) => (
+          <span className="admin-help-pill" key={value}>
+            {value}
+          </span>
+        ))
+      ) : (
+        <span className="admin-help-pill is-empty">Not provided</span>
+      )}
     </div>
   );
 }

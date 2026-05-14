@@ -26,6 +26,14 @@ function optionalTextValue(formData: FormData, key: string, maxLength = 1000) {
   return value || null;
 }
 
+function arrayValue(formData: FormData, key: string, maxLength = 140) {
+  return formData
+    .getAll(key)
+    .filter((value): value is string => typeof value === "string")
+    .map((value) => value.trim().slice(0, maxLength))
+    .filter(Boolean);
+}
+
 function isAllowedOption<T extends readonly string[]>(value: string, options: T) {
   return options.includes(value as T[number]);
 }
@@ -35,11 +43,11 @@ export async function submitReportRequest(_: ReportRequestState, formData: FormD
     first_name: textValue(formData, "first_name", 120),
     last_name: textValue(formData, "last_name", 120),
     email: textValue(formData, "email", 254).toLowerCase(),
-    phone: optionalTextValue(formData, "phone", 80),
+    phone: textValue(formData, "phone", 80),
     organization_name: textValue(formData, "organization_name", 180),
     organization_type: textValue(formData, "organization_type", 80),
     annual_revenue: textValue(formData, "annual_revenue", 80),
-    looking_for: optionalTextValue(formData, "looking_for", 140),
+    looking_for: arrayValue(formData, "looking_for", 140),
     message: optionalTextValue(formData, "message", 2000),
     source: textValue(formData, "source", 120) || "alignedinsights.tech",
   };
@@ -49,6 +57,7 @@ export async function submitReportRequest(_: ReportRequestState, formData: FormD
   if (!inquiry.first_name) fieldErrors.first_name = "First name is required.";
   if (!inquiry.last_name) fieldErrors.last_name = "Last name is required.";
   if (!inquiry.email || !emailPattern.test(inquiry.email)) fieldErrors.email = "Enter a valid email address.";
+  if (!inquiry.phone) fieldErrors.phone = "Phone is required.";
   if (!inquiry.organization_name) fieldErrors.organization_name = "Organization name is required.";
 
   if (!inquiry.organization_type || !isAllowedOption(inquiry.organization_type, organizationTypeOptions)) {
@@ -59,8 +68,10 @@ export async function submitReportRequest(_: ReportRequestState, formData: FormD
     fieldErrors.annual_revenue = "Select an annual revenue range.";
   }
 
-  if (inquiry.looking_for && !isAllowedOption(inquiry.looking_for, lookingForOptions)) {
-    fieldErrors.looking_for = "Select a valid option.";
+  if (!inquiry.looking_for.length) {
+    fieldErrors.looking_for = "Select at least one area of help.";
+  } else if (inquiry.looking_for.some((value) => !isAllowedOption(value, lookingForOptions))) {
+    fieldErrors.looking_for = "Select valid options.";
   }
 
   if (Object.keys(fieldErrors).length > 0) {

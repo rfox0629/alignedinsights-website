@@ -10,6 +10,8 @@ type PremiumSelectProps = {
   required?: boolean;
 };
 
+type PremiumMultiSelectProps = PremiumSelectProps;
+
 export function PremiumSelect({ ariaLabel, name, options, placeholder, required = false }: PremiumSelectProps) {
   const generatedId = useId();
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -197,6 +199,221 @@ export function PremiumSelect({ ariaLabel, name, options, placeholder, required 
               {option}
             </li>
           ))}
+        </ul>
+      ) : null}
+      {validationError ? (
+        <p className="premium-select-error" id={errorId}>
+          {validationError}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export function PremiumMultiSelect({ ariaLabel, name, options, placeholder, required = false }: PremiumMultiSelectProps) {
+  const generatedId = useId();
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [validationError, setValidationError] = useState("");
+
+  const selectedSet = useMemo(() => new Set(selectedValues), [selectedValues]);
+  const listboxId = `${generatedId}-listbox`;
+  const errorId = `${generatedId}-error`;
+  const activeOptionId = isOpen && activeIndex >= 0 ? `${generatedId}-option-${activeIndex}` : undefined;
+
+  const openMenu = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const closeMenu = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const toggleOption = useCallback((option: string) => {
+    setSelectedValues((current) =>
+      current.includes(option) ? current.filter((value) => value !== option) : [...current, option],
+    );
+    setValidationError("");
+  }, []);
+
+  const moveActive = useCallback(
+    (direction: 1 | -1) => {
+      setActiveIndex((current) => {
+        if (!options.length) return 0;
+        return (current + direction + options.length) % options.length;
+      });
+    },
+    [options.length],
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [closeMenu, isOpen]);
+
+  useEffect(() => {
+    const form = rootRef.current?.closest("form");
+    if (!form) return;
+
+    const validateRequiredSelect = (event: SubmitEvent) => {
+      if (!required || selectedValues.length) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      setValidationError("Please select at least one option.");
+      triggerRef.current?.focus();
+    };
+
+    form.addEventListener("submit", validateRequiredSelect, true);
+
+    return () => {
+      form.removeEventListener("submit", validateRequiredSelect, true);
+    };
+  }, [required, selectedValues.length]);
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (!isOpen && ["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+      event.preventDefault();
+      openMenu();
+      return;
+    }
+
+    if (!isOpen) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      moveActive(1);
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      moveActive(-1);
+      return;
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault();
+      setActiveIndex(0);
+      return;
+    }
+
+    if (event.key === "End") {
+      event.preventDefault();
+      setActiveIndex(Math.max(options.length - 1, 0));
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMenu();
+      return;
+    }
+
+    if (event.key === "Tab") {
+      closeMenu();
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const option = options[activeIndex];
+      if (option) toggleOption(option);
+      return;
+    }
+
+    if (event.key.length === 1 && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      const typedKey = event.key.toLowerCase();
+      const startIndex = activeIndex + 1;
+      const orderedOptions = [...options.slice(startIndex), ...options.slice(0, startIndex)];
+      const match = orderedOptions.find((option) => option.toLowerCase().startsWith(typedKey));
+
+      if (match) {
+        event.preventDefault();
+        setActiveIndex(options.findIndex((option) => option === match));
+      }
+    }
+  };
+
+  return (
+    <div className="premium-select" ref={rootRef}>
+      {selectedValues.map((value) => (
+        <input key={value} name={name} type="hidden" value={value} />
+      ))}
+      <button
+        aria-activedescendant={activeOptionId}
+        aria-controls={listboxId}
+        aria-describedby={validationError ? errorId : undefined}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-invalid={validationError ? true : undefined}
+        aria-label={ariaLabel}
+        className={`premium-select-trigger premium-select-trigger-multi${selectedValues.length ? "" : " is-placeholder"}${isOpen ? " is-open" : ""}`}
+        onClick={() => {
+          if (isOpen) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        }}
+        onKeyDown={onKeyDown}
+        ref={triggerRef}
+        role="combobox"
+        type="button"
+      >
+        {selectedValues.length ? (
+          <span className="premium-select-pills">
+            {selectedValues.map((value) => (
+              <span className="premium-select-pill" key={value}>
+                {value}
+              </span>
+            ))}
+          </span>
+        ) : (
+          <span>{placeholder}</span>
+        )}
+        <svg aria-hidden="true" className="premium-select-icon" fill="none" viewBox="0 0 20 20">
+          <path d="m5.5 7.5 4.5 4.5 4.5-4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
+        </svg>
+      </button>
+      {isOpen ? (
+        <ul aria-multiselectable="true" className="premium-select-menu" id={listboxId} role="listbox">
+          {options.map((option, index) => {
+            const isSelected = selectedSet.has(option);
+
+            return (
+              <li
+                aria-selected={isSelected}
+                className={`${index === activeIndex ? "is-active" : ""}${isSelected ? " is-selected" : ""}`}
+                id={`${generatedId}-option-${index}`}
+                key={option}
+                onMouseDown={(event) => event.preventDefault()}
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => toggleOption(option)}
+                role="option"
+              >
+                <span className="premium-select-check" aria-hidden="true">
+                  {isSelected ? "✓" : ""}
+                </span>
+                <span>{option}</span>
+              </li>
+            );
+          })}
         </ul>
       ) : null}
       {validationError ? (

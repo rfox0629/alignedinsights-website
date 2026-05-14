@@ -1452,7 +1452,7 @@ h2 {
 
 .admin-table {
   width: 100%;
-  min-width: 920px;
+  min-width: 1080px;
   border-collapse: collapse;
 }
 
@@ -1488,6 +1488,31 @@ h2 {
   margin-top: 2px;
   color: var(--ink-4);
   font-size: 12px;
+}
+
+.admin-help-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.admin-help-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(30, 107, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(30, 107, 255, 0.07);
+  color: var(--ink-2);
+  font-size: 11.5px;
+  font-weight: 650;
+  line-height: 1.2;
+  padding: 4px 7px;
+}
+
+.admin-help-pill.is-empty {
+  border-color: var(--line);
+  background: #fff;
+  color: var(--ink-4);
 }
 
 .admin-table a {
@@ -1613,6 +1638,22 @@ h2 {
   color: var(--ink);
   font-size: 13px;
   font-weight: 650;
+}
+
+.admin-detail-item .admin-help-pills {
+  margin-top: 8px;
+}
+
+.admin-detail-item .admin-help-pill {
+  display: inline-flex;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.admin-detail-item .admin-help-pill.is-empty {
+  color: var(--ink-4);
 }
 
 .admin-note,
@@ -2280,6 +2321,37 @@ h2 {
   color: var(--ink-4);
 }
 
+.premium-select-trigger-multi {
+  min-height: 48px;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.premium-select-trigger .premium-select-pills {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 6px;
+  overflow: visible;
+  white-space: normal;
+}
+
+.premium-select-trigger .premium-select-pill {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  border: 1px solid rgba(30, 107, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(30, 107, 255, 0.08);
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 5px 8px;
+  white-space: normal;
+}
+
 .premium-select-icon {
   width: 18px;
   height: 18px;
@@ -2314,6 +2386,7 @@ h2 {
   display: flex;
   min-height: 38px;
   align-items: center;
+  gap: 9px;
   padding: 9px 10px;
   border-radius: 10px;
   color: var(--ink-2);
@@ -2321,6 +2394,19 @@ h2 {
   font-size: 14px;
   line-height: 1.3;
   transition: background 0.14s ease, color 0.14s ease;
+}
+
+.premium-select-check {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(30, 107, 255, 0.08);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .premium-select-menu li.is-active {

@@ -34,8 +34,16 @@ function formatSubmittedAt(value: string) {
   }).format(new Date(value));
 }
 
-function line(label: string, value: string | null) {
-  return `${label}: ${value || "Not provided"}`;
+function displayValue(value: string | string[] | null) {
+  if (Array.isArray(value)) {
+    return value.length ? value.join(", ") : "Not provided";
+  }
+
+  return value || "Not provided";
+}
+
+function line(label: string, value: string | string[] | null) {
+  return `${label}: ${displayValue(value)}`;
 }
 
 export async function sendReportRequestNotification(inquiry: InquiryRow) {
@@ -64,7 +72,7 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
     line("Submitted at", submittedAt),
   ].join("\n");
 
-  const htmlRows = [
+  const htmlRows: Array<[string, string | string[] | null]> = [
     ["Name", fullName],
     ["Email", inquiry.email],
     ["Phone", inquiry.phone],
@@ -91,7 +99,7 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
                 ([label, value]) => `
                   <tr>
                     <td style="border-bottom: 1px solid #e4eaf2; color: #4a5b78; font-size: 13px; padding: 10px 12px 10px 0; vertical-align: top; width: 180px;">${escapeHtml(label)}</td>
-                    <td style="border-bottom: 1px solid #e4eaf2; font-size: 14px; padding: 10px 0; vertical-align: top;">${escapeHtml(value)}</td>
+                    <td style="border-bottom: 1px solid #e4eaf2; font-size: 14px; padding: 10px 0; vertical-align: top;">${escapeHtml(displayValue(value))}</td>
                   </tr>
                 `,
               )

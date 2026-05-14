@@ -2,7 +2,7 @@
 
 import { createContext, type ReactNode, useActionState, useCallback, useContext, useEffect, useId, useState } from "react";
 import { submitReportRequest } from "@/app/report-request-actions";
-import { PremiumSelect } from "@/components/site/premium-select";
+import { PremiumMultiSelect, PremiumSelect } from "@/components/site/premium-select";
 import { annualRevenueOptions, lookingForOptions, organizationTypeOptions } from "@/lib/report-request/options";
 import { initialReportRequestState, type ReportRequestField, type ReportRequestState } from "@/lib/report-request/state";
 
@@ -129,7 +129,7 @@ function ContactModalDialog({
                   <input autoComplete="email" name="email" required type="email" />
                 </FormField>
                 <FormField error={<FieldError field="phone" state={state} />} label="Phone">
-                  <input autoComplete="tel" name="phone" type="tel" />
+                  <input autoComplete="tel" name="phone" required type="tel" />
                 </FormField>
                 <FormField error={<FieldError field="organization_name" state={state} />} label="Organization name">
                   <input autoComplete="organization" name="organization_name" required type="text" />
@@ -140,10 +140,16 @@ function ContactModalDialog({
                 <FormSelectField error={<FieldError field="annual_revenue" state={state} />} label="Annual revenue">
                   <PremiumSelect ariaLabel="Annual revenue" name="annual_revenue" options={annualRevenueOptions} placeholder="Select range" required />
                 </FormSelectField>
-                <FormSelectField error={<FieldError field="looking_for" state={state} />} label="What are you looking for?">
-                  <PremiumSelect ariaLabel="What are you looking for?" name="looking_for" options={lookingForOptions} placeholder="Select one" />
+                <FormSelectField error={<FieldError field="looking_for" state={state} />} label="What do you need help with?">
+                  <PremiumMultiSelect
+                    ariaLabel="What do you need help with?"
+                    name="looking_for"
+                    options={lookingForOptions}
+                    placeholder="Select one or more"
+                    required
+                  />
                 </FormSelectField>
-                <FormField className="contact-field-wide" error={<FieldError field="message" state={state} />} label="Message">
+                <FormField className="contact-field-wide" error={<FieldError field="message" state={state} />} label="Message / notes">
                   <textarea name="message" rows={4} />
                 </FormField>
               </div>
