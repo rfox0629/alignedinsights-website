@@ -17,6 +17,41 @@ const teamMemberKey = "aligned-insights-admin-team-member";
 const quickStatuses: InquiryStatus[] = ["Intake Sent", "Reviewing", "Completed"];
 type InquiryRow = Database["public"]["Tables"]["aligned_insights_inquiries"]["Row"];
 
+const statusMeta: Record<
+  InquiryStatus,
+  {
+    caption: string;
+    icon: string;
+    tone: string;
+  }
+> = {
+  New: {
+    caption: "Fresh requests",
+    icon: "✨",
+    tone: "new",
+  },
+  Contacted: {
+    caption: "Conversation opened",
+    icon: "📞",
+    tone: "contacted",
+  },
+  "Intake Sent": {
+    caption: "Waiting on intake",
+    icon: "📄",
+    tone: "intake-sent",
+  },
+  Reviewing: {
+    caption: "Report in motion",
+    icon: "👀",
+    tone: "reviewing",
+  },
+  Completed: {
+    caption: "Closed loop",
+    icon: "✅",
+    tone: "completed",
+  },
+};
+
 export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
   const [authError, setAuthError] = useState("");
   const [copyState, setCopyState] = useState("");
@@ -40,10 +75,17 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
 
   const statusCounts = useMemo(
     () =>
-      inquiryStatuses.map((status) => ({
-        status,
-        total: inquiries.filter((inquiry) => inquiry.status === status).length,
-      })),
+      inquiryStatuses.map((status) => {
+        const total = inquiries.filter((inquiry) => inquiry.status === status).length;
+        const percent = inquiries.length ? Math.max(8, Math.round((total / inquiries.length) * 100)) : 8;
+
+        return {
+          ...statusMeta[status],
+          percent,
+          status,
+          total,
+        };
+      }),
     [inquiries],
   );
 
@@ -218,78 +260,108 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
         </div>
       </header>
 
-      <section className="admin-stats" aria-label="Inquiry status totals">
-        {statusCounts.map(({ status, total }) => (
-          <article className="admin-stat" key={status}>
-            <span>{status}</span>
-            <strong>{total}</strong>
-          </article>
-        ))}
-      </section>
-
       {authError ? <p className="admin-error admin-page-error">{authError}</p> : null}
       {loadWarning ? <p className="admin-warning admin-page-warning">{loadWarning}</p> : null}
 
-      <section className="admin-table-card">
-        <div className="admin-table-head">
+      <section className="admin-dashboard-frame" aria-label="Report request dashboard">
+        <div className="admin-dashboard-head">
           <div>
-            <h2>Inquiry inbox</h2>
-            <p>{isLoading ? "Loading inquiries..." : `${inquiries.length} active records`}</p>
+            <span className="admin-dashboard-eyebrow">Overview / Requests</span>
+            <h2>Report request pipeline</h2>
+            <p>Track every inquiry from first request through intake review.</p>
+          </div>
+          <div className="admin-dashboard-tabs" aria-label="Dashboard timeframe">
+            <span className="is-active">Live</span>
+            <span>Month</span>
+            <span>Year</span>
           </div>
         </div>
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Organization</th>
-                <th>Contact Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Help Needed</th>
-                <th>Submitted Date</th>
-                <th>Status</th>
-                <th aria-label="Actions" />
-              </tr>
-            </thead>
-            <tbody>
-              {inquiries.length ? (
-                inquiries.map((inquiry) => (
-                  <tr key={inquiry.id}>
-                    <td>
-                      <strong>{inquiry.organization_name}</strong>
-                      <span>{inquiry.organization_type}</span>
-                    </td>
-                    <td>{fullName(inquiry)}</td>
-                    <td>
-                      <a href={`mailto:${inquiry.email}`}>{inquiry.email}</a>
-                    </td>
-                    <td>{inquiry.phone}</td>
-                    <td>
-                      <HelpPills values={inquiry.looking_for} />
-                    </td>
-                    <td>{formatDate(inquiry.created_at)}</td>
-                    <td>
-                      <StatusBadge status={inquiry.status} />
-                    </td>
-                    <td>
-                      <button className="admin-link-button" onClick={() => setSelectedId(inquiry.id)} type="button">
-                        View
-                      </button>
+
+        <section className="admin-stats" aria-label="Inquiry status totals">
+          {statusCounts.map(({ caption, icon, percent, status, tone, total }) => (
+            <article className={`admin-stat admin-stat-${tone}`} key={status}>
+              <div className="admin-stat-top">
+                <span className="admin-stat-icon" aria-hidden="true">
+                  {icon}
+                </span>
+                <span className="admin-stat-label">{status}</span>
+              </div>
+              <strong>{total}</strong>
+              <div className="admin-stat-meter" aria-hidden="true">
+                <span style={{ width: `${percent}%` }} />
+              </div>
+              <p>{caption}</p>
+            </article>
+          ))}
+        </section>
+
+        <section className="admin-table-card">
+          <div className="admin-table-head">
+            <div className="admin-table-title">
+              <span className="admin-section-mark" aria-hidden="true">
+                ▦
+              </span>
+              <div>
+                <h2>Inquiry inbox</h2>
+                <p>{isLoading ? "Loading inquiries..." : `${inquiries.length} active records`}</p>
+              </div>
+            </div>
+            <span className={`admin-live-pill${loadWarning ? " is-warning" : ""}`}>
+              {loadWarning ? "Setup needed" : "Live"}
+            </span>
+          </div>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Organization</th>
+                  <th>Contact Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Help Needed</th>
+                  <th>Submitted Date</th>
+                  <th>Status</th>
+                  <th aria-label="Actions" />
+                </tr>
+              </thead>
+              <tbody>
+                {inquiries.length ? (
+                  inquiries.map((inquiry) => (
+                    <tr key={inquiry.id}>
+                      <td>
+                        <strong>{inquiry.organization_name}</strong>
+                        <span>{inquiry.organization_type}</span>
+                      </td>
+                      <td>{fullName(inquiry)}</td>
+                      <td>
+                        <a href={`mailto:${inquiry.email}`}>{inquiry.email}</a>
+                      </td>
+                      <td>{inquiry.phone}</td>
+                      <td>
+                        <HelpPills values={inquiry.looking_for} />
+                      </td>
+                      <td>{formatDate(inquiry.created_at)}</td>
+                      <td>
+                        <StatusBadge status={inquiry.status} />
+                      </td>
+                      <td>
+                        <button className="admin-link-button" onClick={() => setSelectedId(inquiry.id)} type="button">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8}>
+                      <AdminEmptyState hasSetupWarning={Boolean(loadWarning)} />
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={8}>
-                    <div className="admin-empty">
-                      {loadWarning ? "Inquiry data is unavailable until Supabase is configured." : "No inquiries yet."}
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </section>
 
       {selectedInquiry ? (
@@ -308,6 +380,22 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
         />
       ) : null}
     </main>
+  );
+}
+
+function AdminEmptyState({ hasSetupWarning }: { hasSetupWarning: boolean }) {
+  return (
+    <div className="admin-empty">
+      <span className="admin-empty-icon" aria-hidden="true">
+        {hasSetupWarning ? "⚙️" : "✨"}
+      </span>
+      <h3>{hasSetupWarning ? "Connect inquiry data" : "No report requests yet"}</h3>
+      <p>
+        {hasSetupWarning
+          ? "Supabase configuration is needed before the dashboard can load inquiry records."
+          : "New Financial Insights Report requests will appear here as soon as they arrive."}
+      </p>
+    </div>
   );
 }
 
@@ -572,7 +660,18 @@ function formatJsonValue(value: Json | undefined) {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  return <span className={`admin-status-badge admin-status-${status.toLowerCase().replaceAll(" ", "-")}`}>{status}</span>;
+  const meta = statusMeta[status as InquiryStatus];
+
+  return (
+    <span className={`admin-status-badge admin-status-${status.toLowerCase().replaceAll(" ", "-")}`}>
+      {meta ? (
+        <span className="admin-status-icon" aria-hidden="true">
+          {meta.icon}
+        </span>
+      ) : null}
+      {status}
+    </span>
+  );
 }
 
 function buildIntakeEmail(inquiry: AdminInquiry) {
