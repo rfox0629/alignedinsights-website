@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7fbff;
+  --foreground: #071526;
+  --accent: #20d9ff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 32%, transparent);
+}
+
+@keyframes float-panel {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes draw-line {
+  from {
+    stroke-dashoffset: 380;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes soft-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-soft-reveal {
+  animation: soft-reveal 720ms ease both;
+}
+
+.animate-float-panel {
+  animation: float-panel 8s ease-in-out infinite;
+}
+
+.animated-path {
+  stroke-dasharray: 380;
+  animation: draw-line 4.5s ease-in-out infinite alternate;
+}
+
+.glass-line {
+  border-color: rgb(7 21 38 / 0.1);
+  background: rgb(247 251 255 / 0.78);
+  box-shadow: 0 24px 80px rgb(7 21 38 / 0.08);
+  backdrop-filter: blur(18px);
+}
