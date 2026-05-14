@@ -1474,39 +1474,43 @@ h2 {
 
 .briefing-perspective {
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  gap: 54px;
-  padding: 58px 0;
+  justify-items: center;
+  gap: 28px;
+  padding: 64px 0;
   border-top: 1px solid var(--line);
+  text-align: center;
 }
 
 .briefing-perspective-head {
-  align-self: start;
+  width: min(100%, 960px);
 }
 
 .briefing-perspective-head .section-label {
   margin-bottom: 18px;
+  text-align: center;
 }
 
 .briefing-perspective-head h2 {
   margin: 0;
   color: var(--ink);
   font-family: var(--font-fraunces), "Times New Roman", serif;
-  font-size: clamp(30px, 3.6vw, 46px);
+  font-size: clamp(36px, 4vw, 54px);
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 1.05;
+  line-height: 1.04;
 }
 
 .briefing-perspective-card {
   position: relative;
+  width: min(100%, 860px);
   margin: 0;
-  padding: 34px;
+  padding: 38px;
   border: 1px solid var(--line);
   border-left: 2px solid rgba(30, 107, 255, 0.72);
-  border-radius: 0 22px 22px 0;
+  border-radius: 22px;
   background: rgba(255, 255, 255, 0.86);
   box-shadow: var(--shadow-sm);
+  text-align: left;
 }
 
 .briefing-perspective-card blockquote {
@@ -1523,8 +1527,8 @@ h2 {
 .briefing-perspective-card .briefing-perspective-lead {
   color: var(--ink);
   font-family: var(--font-fraunces), "Times New Roman", serif;
-  font-size: clamp(28px, 3vw, 38px);
-  line-height: 1.12;
+  font-size: clamp(23px, 2vw, 30px);
+  line-height: 1.22;
 }
 
 .briefing-perspective-card figcaption {
@@ -2837,7 +2841,7 @@ footer {
   }
 
   .briefing-perspective-card .briefing-perspective-lead {
-    font-size: clamp(25px, 7.8vw, 32px);
+    font-size: clamp(21px, 5.8vw, 24px);
   }
 
   .briefing-reference-list a {
