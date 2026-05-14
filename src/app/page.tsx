@@ -1,5 +1,7 @@
+import { BriefingOverlayProvider, BriefingTrigger } from "@/components/site/briefing-overlay";
 import { ContactModalProvider, ContactTrigger } from "@/components/site/contact-modal";
 import { SiteEffects } from "@/components/site/site-effects";
+import { cpaBriefing } from "@/lib/briefing/cpa-briefing";
 
 const problems = [
   {
@@ -144,6 +146,36 @@ function HeroPreview() {
   );
 }
 
+function BriefingCta({ placement }: { placement: "mid" | "bottom" }) {
+  return (
+    <section className={`briefing-cta-section briefing-cta-${placement}`}>
+      <div className="container">
+        <div className="briefing-cta-card reveal">
+          <div className="briefing-cta-copy">
+            <span className="section-label">Research briefing</span>
+            <h2>{cpaBriefing.title}</h2>
+            <p>{cpaBriefing.ctaSubtext}</p>
+          </div>
+          <div className="briefing-cta-visual" aria-hidden="true">
+            <div>
+              <span>Briefing</span>
+              <strong>03</strong>
+            </div>
+            <p>Financial operations are becoming systemized.</p>
+          </div>
+          <div className="briefing-cta-actions">
+            <BriefingTrigger className="btn btn-accent">
+              Read the Briefing
+              <ArrowIcon />
+            </BriefingTrigger>
+            <span>{cpaBriefing.helper}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function DashboardGrid() {
   return (
     <div className="dash-grid">
@@ -229,33 +261,34 @@ function DashboardGrid() {
 export default function Home() {
   return (
     <ContactModalProvider>
-      <SiteEffects />
-      <div id="top" />
+      <BriefingOverlayProvider>
+        <SiteEffects />
+        <div id="top" />
 
-      <div className="nav-wrap" id="navWrap">
-        <div className="container">
-          <nav>
-            <a aria-label="Aligned Insights home" href="#top">
-              <Logo />
-            </a>
-            <div className="nav-links">
-              <a href="#why">Why this exists</a>
-              <a href="#solution">Platform</a>
-              <a href="#dashboard">Dashboard</a>
-              <a href="#handle">What we handle</a>
-            </div>
-            <div className="nav-cta">
-              <ContactTrigger className="btn btn-accent btn-sm">
-                <span className="nav-cta-full">Request a Free Report</span>
-                <span className="nav-cta-short">Free Report</span>
-                <ArrowIcon />
-              </ContactTrigger>
-            </div>
-          </nav>
+        <div className="nav-wrap" id="navWrap">
+          <div className="container">
+            <nav>
+              <a aria-label="Aligned Insights home" href="#top">
+                <Logo />
+              </a>
+              <div className="nav-links">
+                <a href="#why">Why this exists</a>
+                <a href="#solution">Platform</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#handle">What we handle</a>
+              </div>
+              <div className="nav-cta">
+                <ContactTrigger className="btn btn-accent btn-sm">
+                  <span className="nav-cta-full">Request a Free Report</span>
+                  <span className="nav-cta-short">Free Report</span>
+                  <ArrowIcon />
+                </ContactTrigger>
+              </div>
+            </nav>
+          </div>
         </div>
-      </div>
 
-      <main>
+        <main>
         <section className="hero">
           <div className="hero-bg">
             <div className="grid-overlay" />
@@ -442,6 +475,8 @@ export default function Home() {
           </div>
         </section>
 
+        <BriefingCta placement="mid" />
+
         <section className="human">
           <div className="container">
             <div className="human-grid">
@@ -547,6 +582,8 @@ export default function Home() {
           </div>
         </section>
 
+        <BriefingCta placement="bottom" />
+
         <section className="final-cta" id="cta">
           <div className="container">
             <div className="final-cta-inner">
@@ -564,22 +601,23 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </main>
+        </main>
 
-      <footer>
-        <div className="container">
-          <div className="foot">
-            <Logo />
-            <div className="foot-links">
-              <a href="#solution">Platform</a>
-              <a href="#handle">What we handle</a>
-              <a href="#why">Why this exists</a>
-              <a href="#cta">Contact</a>
+        <footer>
+          <div className="container">
+            <div className="foot">
+              <Logo />
+              <div className="foot-links">
+                <a href="#solution">Platform</a>
+                <a href="#handle">What we handle</a>
+                <a href="#why">Why this exists</a>
+                <a href="#cta">Contact</a>
+              </div>
+              <div className="foot-meta">alignedinsights.tech · © 2026</div>
             </div>
-            <div className="foot-meta">alignedinsights.tech · © 2026</div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </BriefingOverlayProvider>
     </ContactModalProvider>
   );
 }
