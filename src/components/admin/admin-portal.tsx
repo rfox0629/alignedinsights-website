@@ -20,9 +20,11 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
   const [inquiries, setInquiries] = useState<AdminInquiry[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadWarning, setLoadWarning] = useState("");
   const [isPending, startTransition] = useTransition();
   const [password, setPassword] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [teamMember, setTeamMember] = useState(() =>
     typeof window === "undefined" ? "" : sessionStorage.getItem(teamMemberKey) || "",
   );
@@ -45,20 +47,32 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
   const loadInquiries = useCallback((adminToken: string) => {
     setIsLoading(true);
     setAuthError("");
+    setLoadWarning("");
 
     startTransition(async () => {
       const result = await getAdminInquiries(adminToken);
       setIsLoading(false);
 
       if (!result.success || !result.data) {
-        setAuthError(result.error || "Unable to load inquiries.");
-        setIsAuthenticated(false);
-        sessionStorage.removeItem(sessionKey);
+        const message = result.error || "Unable to load inquiries.";
+
+        if (message.toLowerCase().includes("admin session")) {
+          setAuthError(message);
+          setIsAuthenticated(false);
+          setToken("");
+          sessionStorage.removeItem(sessionKey);
+          return;
+        }
+
+        setInquiries([]);
+        setIsAuthenticated(true);
+        setLoadWarning(message);
         return;
       }
 
       setInquiries(result.data);
       setIsAuthenticated(true);
+      setLoadWarning(result.warning || "");
     });
   }, []);
 
@@ -81,6 +95,7 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
   function handleLogin(formData: FormData) {
     const submittedPassword = String(formData.get("password") || "");
     setAuthError("");
+    setLoadWarning("");
 
     startTransition(async () => {
       const result = await authenticateAdmin(submittedPassword);
@@ -92,12 +107,15 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
 
       sessionStorage.setItem(sessionKey, result.data.token);
       setToken(result.data.token);
+      setIsAuthenticated(true);
       setPassword("");
     });
   }
 
   function handleSignOut() {
     sessionStorage.removeItem(sessionKey);
+    setAuthError("");
+    setLoadWarning("");
     setToken("");
     setIsAuthenticated(false);
     setInquiries([]);
@@ -114,6 +132,7 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
   function markStatus(inquiry: AdminInquiry, status: InquiryStatus) {
     setAuthError("");
     setCopyState("");
+    setLoadWarning("");
 
     startTransition(async () => {
       const result = await updateInquiryStatus({
@@ -150,14 +169,23 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
           <form action={handleLogin} className="admin-login-form">
             <label>
               <span>Password</span>
-              <input
-                autoComplete="current-password"
-                name="password"
-                onChange={(event) => setPassword(event.target.value)}
-                required
-                type="password"
-                value={password}
-              />
+              <div className="admin-password-field">
+                <input
+                  autoComplete="current-password"
+                  name="password"
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                />
+                <button
+                  className="admin-password-toggle"
+                  onClick={() => setShowPassword((current) => !current)}
+                  type="button"
+                >
+                  {showPassword ? "Hide password" : "Show password"}
+                </button>
+              </div>
             </label>
             {authError ? <p className="admin-error">{authError}</p> : null}
             <button className="admin-button admin-button-primary" disabled={isPending} type="submit">
@@ -197,6 +225,7 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
       </section>
 
       {authError ? <p className="admin-error admin-page-error">{authError}</p> : null}
+      {loadWarning ? <p className="admin-warning admin-page-warning">{loadWarning}</p> : null}
 
       <section className="admin-table-card">
         <div className="admin-table-head">
@@ -249,7 +278,9 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
               ) : (
                 <tr>
                   <td colSpan={8}>
-                    <div className="admin-empty">No inquiries yet.</div>
+                    <div className="admin-empty">
+                      {loadWarning ? "Inquiry data is unavailable until Supabase is configured." : "No inquiries yet."}
+                    </div>
                   </td>
                 </tr>
               )}

@@ -1306,6 +1306,38 @@ h2 {
   box-shadow: 0 0 0 4px rgba(30, 107, 255, 0.1);
 }
 
+.admin-password-field {
+  position: relative;
+}
+
+.admin-password-field input {
+  padding-right: 118px;
+}
+
+.admin-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  transform: translateY(-50%);
+}
+
+.admin-password-toggle:hover,
+.admin-password-toggle:focus-visible {
+  color: #185ee6;
+}
+
+.admin-password-toggle:focus-visible {
+  outline: 2px solid rgba(30, 107, 255, 0.22);
+  outline-offset: 3px;
+}
+
 .admin-button,
 .admin-link-button,
 .admin-icon-button {
@@ -1353,7 +1385,8 @@ h2 {
 }
 
 .admin-error,
-.admin-success {
+.admin-success,
+.admin-warning {
   margin: 0;
   border-radius: 12px;
   padding: 10px 12px;
@@ -1372,7 +1405,14 @@ h2 {
   color: var(--accent);
 }
 
-.admin-page-error {
+.admin-warning {
+  border: 1px solid rgba(30, 107, 255, 0.18);
+  background: rgba(30, 107, 255, 0.07);
+  color: var(--ink-2);
+}
+
+.admin-page-error,
+.admin-page-warning {
   margin: 18px 0 0;
 }
 
