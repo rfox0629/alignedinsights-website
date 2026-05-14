@@ -29,6 +29,13 @@ const handled = [
   ["Leadership summaries", "Short, clear briefs that make board and operator conversations easier to lead."],
 ];
 
+const humanLayerCards = [
+  ["Assisted categorization", "Automatically organizes financial activity into cleaner, more consistent reporting structures."],
+  ["Automation workflows", "Recurring operational tasks handled through reliable, systemized processes."],
+  ["Real-time dashboards", "Leadership visibility that stays current without waiting on month-end reporting."],
+  ["Experienced operational oversight", "Financial signals reviewed by experienced operators who understand organizational decision making."],
+];
+
 const visibility = [
   ["Cash position", "Know where cash stands before decisions are on the table."],
   ["Giving trends", "See movement across the month, quarter, and year."],
@@ -448,12 +455,12 @@ export default function Home() {
               </div>
               <div className="human-card reveal">
                 <div className="human-card-grid">
-                  {["Assisted categorization", "Automation workflows", "Real-time dashboards", "Experienced operational oversight"].map((item, index) => (
-                    <div className="human-row" key={item}>
+                  {humanLayerCards.map(([title, copy], index) => (
+                    <div className="human-row" key={title}>
                       <span>0{index + 1}</span>
                       <div>
-                        <strong>{item}</strong>
-                        <p>Built to reduce repetitive work while keeping judgment in the right hands.</p>
+                        <strong>{title}</strong>
+                        <p>{copy}</p>
                       </div>
                     </div>
                   ))}
