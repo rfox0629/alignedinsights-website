@@ -55,10 +55,10 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
   }
 
   const notifyEmail = "ryan@alignedinsights.tech";
-  const fromEmail = process.env.RESEND_FROM_EMAIL || "Aligned Insights <onboarding@resend.dev>";
+  const fromEmail = "notifications@alignedinsights.tech";
   const submittedAt = formatSubmittedAt(inquiry.created_at);
   const fullName = `${inquiry.first_name} ${inquiry.last_name}`.trim();
-  const adminUrl = "https://alignedinsights.tech/admin/inquiries";
+  const adminUrl = "https://alignedinsights.tech/admin";
   const text = [
     "New Financial Insights Inquiry",
     "",
@@ -66,7 +66,7 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
     line("Organization", inquiry.organization_name),
     line("Email", inquiry.email),
     line("Phone", inquiry.phone),
-    line("Services requested", inquiry.looking_for),
+    line("Help requested", inquiry.looking_for),
     line("Message", inquiry.message),
     line("Submitted at", submittedAt),
     "",
@@ -78,7 +78,7 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
     ["Organization", inquiry.organization_name],
     ["Email", inquiry.email],
     ["Phone", inquiry.phone],
-    ["Services requested", inquiry.looking_for],
+    ["Help requested", inquiry.looking_for],
     ["Message", inquiry.message],
     ["Submitted at", submittedAt],
   ];
@@ -107,7 +107,7 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
           </tbody>
         </table>
         <p style="margin: 20px 0 0;">
-          <a href="${adminUrl}" style="color: #1e6bff; font-size: 14px; font-weight: 600; text-decoration: none;">Open admin inquiries</a>
+          <a href="${adminUrl}" style="color: #1e6bff; font-size: 14px; font-weight: 600; text-decoration: none;">Open admin dashboard</a>
         </p>
       </div>
     `,
