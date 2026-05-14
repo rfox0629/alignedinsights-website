@@ -1593,7 +1593,13 @@ h2 {
   width: 32px;
   height: 32px;
   border-radius: 11px;
-  font-size: 15px;
+}
+
+.admin-stat-icon svg,
+.admin-section-mark svg,
+.admin-empty-icon svg {
+  width: 17px;
+  height: 17px;
 }
 
 .admin-stat-label {
@@ -1813,7 +1819,11 @@ h2 {
   width: 44px;
   height: 44px;
   border-radius: 15px;
-  font-size: 18px;
+}
+
+.admin-empty-icon svg {
+  width: 21px;
+  height: 21px;
 }
 
 .admin-empty h3 {
@@ -1845,11 +1855,18 @@ h2 {
 }
 
 .admin-status-badge .admin-status-icon {
-  display: inline-flex;
+  display: inline-grid;
+  width: 13px;
+  height: 13px;
   margin-top: 0;
+  place-items: center;
   color: inherit;
-  font-size: 11px;
   line-height: 1;
+}
+
+.admin-status-badge .admin-status-icon svg {
+  width: 13px;
+  height: 13px;
 }
 
 .admin-status-new {
@@ -1922,6 +1939,11 @@ h2 {
   border-radius: 999px;
   font-size: 18px;
   line-height: 1;
+}
+
+.admin-icon-button svg {
+  width: 17px;
+  height: 17px;
 }
 
 .admin-detail-grid {

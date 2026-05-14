@@ -1,6 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import {
+  CheckCircle2,
+  Eye,
+  FileText,
+  Inbox,
+  LayoutGrid,
+  PhoneCall,
+  Settings,
+  Sparkles,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 
 import { authenticateAdmin, getAdminInquiries, updateInquiryStatus } from "@/app/admin/actions";
 import { inquiryStatuses, type AdminInquiry, type AdminIntakeSubmission, type InquiryStatus } from "@/lib/admin/inquiries";
@@ -21,33 +33,33 @@ const statusMeta: Record<
   InquiryStatus,
   {
     caption: string;
-    icon: string;
+    icon: LucideIcon;
     tone: string;
   }
 > = {
   New: {
     caption: "Fresh requests",
-    icon: "✨",
+    icon: Sparkles,
     tone: "new",
   },
   Contacted: {
     caption: "Conversation opened",
-    icon: "📞",
+    icon: PhoneCall,
     tone: "contacted",
   },
   "Intake Sent": {
     caption: "Waiting on intake",
-    icon: "📄",
+    icon: FileText,
     tone: "intake-sent",
   },
   Reviewing: {
     caption: "Report in motion",
-    icon: "👀",
+    icon: Eye,
     tone: "reviewing",
   },
   Completed: {
     caption: "Closed loop",
-    icon: "✅",
+    icon: CheckCircle2,
     tone: "completed",
   },
 };
@@ -278,11 +290,11 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
         </div>
 
         <section className="admin-stats" aria-label="Inquiry status totals">
-          {statusCounts.map(({ caption, icon, percent, status, tone, total }) => (
+          {statusCounts.map(({ caption, icon: Icon, percent, status, tone, total }) => (
             <article className={`admin-stat admin-stat-${tone}`} key={status}>
               <div className="admin-stat-top">
                 <span className="admin-stat-icon" aria-hidden="true">
-                  {icon}
+                  <Icon strokeWidth={1.9} />
                 </span>
                 <span className="admin-stat-label">{status}</span>
               </div>
@@ -299,7 +311,7 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
           <div className="admin-table-head">
             <div className="admin-table-title">
               <span className="admin-section-mark" aria-hidden="true">
-                ▦
+                <LayoutGrid strokeWidth={1.9} />
               </span>
               <div>
                 <h2>Inquiry inbox</h2>
@@ -384,10 +396,12 @@ export function AdminPortal({ title = "Inquiries" }: AdminPortalProps) {
 }
 
 function AdminEmptyState({ hasSetupWarning }: { hasSetupWarning: boolean }) {
+  const EmptyIcon = hasSetupWarning ? Settings : Inbox;
+
   return (
     <div className="admin-empty">
       <span className="admin-empty-icon" aria-hidden="true">
-        {hasSetupWarning ? "⚙️" : "✨"}
+        <EmptyIcon strokeWidth={1.8} />
       </span>
       <h3>{hasSetupWarning ? "Connect inquiry data" : "No report requests yet"}</h3>
       <p>
@@ -433,7 +447,7 @@ function InquiryDrawer({
             <p>{fullName(inquiry)} - {inquiry.email}</p>
           </div>
           <button aria-label="Close inquiry detail" className="admin-icon-button" onClick={onClose} type="button">
-            x
+            <X aria-hidden="true" strokeWidth={1.9} />
           </button>
         </header>
 
@@ -661,12 +675,13 @@ function formatJsonValue(value: Json | undefined) {
 
 function StatusBadge({ status }: { status: string }) {
   const meta = statusMeta[status as InquiryStatus];
+  const Icon = meta?.icon;
 
   return (
     <span className={`admin-status-badge admin-status-${status.toLowerCase().replaceAll(" ", "-")}`}>
-      {meta ? (
+      {Icon ? (
         <span className="admin-status-icon" aria-hidden="true">
-          {meta.icon}
+          <Icon strokeWidth={2} />
         </span>
       ) : null}
       {status}
