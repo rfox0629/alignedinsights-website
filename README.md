@@ -26,9 +26,18 @@ Copy `.env.example` into a local `.env.local` and provide the existing Supabase 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-The Supabase helpers use lazy initialization so builds remain compatible with Vercel even before environment values are present.
+The Supabase helpers use lazy initialization so builds remain compatible with Vercel even before environment values are present. `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never be exposed with a `NEXT_PUBLIC_` prefix.
+
+Create a private Financial Insights intake link locally with:
+
+```bash
+npm run intake:create-link -- contact@example.com "Organization Name" 2026-06-30
+```
+
+Admin review screens should be added behind authentication before listing submitted intakes in the app.
 
 ## Structure
 

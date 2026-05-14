@@ -74,7 +74,7 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
               <div className="contact-success">
                 <span className="contact-success-icon">✓</span>
                 <h2 id={titleId}>Thanks.</h2>
-                <p id={descriptionId}>We received your message and will follow up soon.</p>
+                <p id={descriptionId}>We received your request and will follow up with the next step for your free Financial Insights Report.</p>
                 <button className="btn btn-accent" onClick={closeModal} type="button">
                   Close
                 </button>
@@ -83,9 +83,9 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
               <>
                 <div className="contact-modal-head">
                   <span className="section-label">Schedule a Conversation</span>
-                  <h2 id={titleId}>Tell us a little about your organization.</h2>
+                  <h2 id={titleId}>Get a Free Financial Insights Report</h2>
                   <p id={descriptionId}>
-                    Share the basics and we will follow up with a clear next step.
+                    Tell us a little about your organization. We&apos;ll follow up with a private intake form so we can prepare a simple financial insights report for your team.
                   </p>
                 </div>
                 <form className="contact-form" onSubmit={handleSubmit}>
@@ -153,7 +153,7 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
                   </div>
                   <ValidationError className="contact-error contact-form-error" errors={state.errors} />
                   <button className="btn btn-accent contact-submit" disabled={state.submitting} type="submit">
-                    {state.submitting ? "Sending..." : "Schedule a Conversation"}
+                    {state.submitting ? "Sending..." : "Request My Report"}
                   </button>
                 </form>
               </>

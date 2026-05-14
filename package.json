@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "intake:create-link": "node scripts/create-intake-link.mjs",
     "start": "next start",
     "lint": "eslint"
   },
