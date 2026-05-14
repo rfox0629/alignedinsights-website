@@ -397,7 +397,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function buildIntakeEmail(inquiry: AdminInquiry) {
-  return `Hi ${inquiry.first_name || "{{Contact first name}}"},
+  return `Hi {{Contact first name}},
 
 Thank you for requesting a Financial Insights Report for ${inquiry.organization_name}. The next step is a short private intake form so we can understand your current financial reporting structure.
 
