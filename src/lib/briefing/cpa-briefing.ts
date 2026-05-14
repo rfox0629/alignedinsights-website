@@ -86,8 +86,8 @@ export const cpaBriefing = {
     headline: "What ministry leaders are experiencing",
     quote: [
       "Ryan Coggins and the team at Aligned Insights helped simplify what had become unnecessarily complicated for our organization. As our church continued to grow, we needed cleaner systems, clearer reporting, and better operational visibility without building a massive internal finance department.",
-      "What stood out was their understanding of both ministry and operations. They helped create a smoother rhythm across reporting, systems, and financial visibility so our team could spend less time managing complexity and more time focused on people and ministry.",
-      "The result was greater clarity, healthier operations, and more confidence in the decisions we were making as a leadership team.",
+      "Through automation, improved systems, and operational visibility, Aligned Insights helped Life Church reduce an estimated $150,000+ per year in operational overhead while creating a smoother and healthier operational rhythm across our organization.",
+      "What stood out was their understanding of both ministry and operations. They helped create clearer reporting, healthier workflows, and more confidence in the decisions we were making as a leadership team so our staff could spend less time managing operational complexity and more time focused on people and ministry.",
     ],
     signature: {
       name: "Aaron Cole",
