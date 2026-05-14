@@ -2,6 +2,7 @@
 
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useId, useState } from "react";
 import { useForm, ValidationError } from "@formspree/react";
+import { PremiumSelect } from "@/components/site/premium-select";
 
 type ContactModalContextValue = {
   openModal: () => void;
@@ -110,39 +111,24 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
                     >
                       <input autoComplete="organization" name="organizationName" required type="text" />
                     </FormField>
-                    <FormField
+                    <FormSelectField
                       error={<ValidationError errors={state.errors} field="organizationType" prefix="Organization type" />}
                       label="Organization type"
                     >
-                      <select defaultValue="" name="organizationType" required>
-                        <option disabled value="">Select one</option>
-                        {organizationTypes.map((option) => (
-                          <option key={option} value={option}>{option}</option>
-                        ))}
-                      </select>
-                    </FormField>
-                    <FormField
+                      <PremiumSelect ariaLabel="Organization type" name="organizationType" options={organizationTypes} placeholder="Select one" required />
+                    </FormSelectField>
+                    <FormSelectField
                       error={<ValidationError errors={state.errors} field="annualRevenue" prefix="Annual revenue" />}
                       label="Annual revenue"
                     >
-                      <select defaultValue="" name="annualRevenue" required>
-                        <option disabled value="">Select range</option>
-                        {annualRevenue.map((option) => (
-                          <option key={option} value={option}>{option}</option>
-                        ))}
-                      </select>
-                    </FormField>
-                    <FormField
+                      <PremiumSelect ariaLabel="Annual revenue" name="annualRevenue" options={annualRevenue} placeholder="Select range" required />
+                    </FormSelectField>
+                    <FormSelectField
                       error={<ValidationError errors={state.errors} field="lookingFor" prefix="What are you looking for?" />}
                       label="What are you looking for?"
                     >
-                      <select defaultValue="" name="lookingFor">
-                        <option value="">Select one</option>
-                        {lookingFor.map((option) => (
-                          <option key={option} value={option}>{option}</option>
-                        ))}
-                      </select>
-                    </FormField>
+                      <PremiumSelect ariaLabel="What are you looking for?" name="lookingFor" options={lookingFor} placeholder="Select one" />
+                    </FormSelectField>
                     <FormField
                       className="contact-field-wide"
                       error={<ValidationError errors={state.errors} field="message" prefix="Message" />}
@@ -205,5 +191,23 @@ function FormField({
       {children}
       {error}
     </label>
+  );
+}
+
+function FormSelectField({
+  children,
+  error,
+  label,
+}: {
+  children: ReactNode;
+  error: ReactNode;
+  label: string;
+}) {
+  return (
+    <div className="contact-field">
+      <span>{label}</span>
+      {children}
+      {error}
+    </div>
   );
 }

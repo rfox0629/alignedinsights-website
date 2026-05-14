@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { submitIntake } from "@/app/intake/[token]/actions";
+import { PremiumSelect } from "@/components/site/premium-select";
 import { intakeSections, maxUploadSizeBytes, uploadFields } from "@/lib/intake/config";
 
 function fieldName(sectionId: string, name: string) {
@@ -102,15 +103,16 @@ function FieldRenderer({
 
   if (field.type === "select") {
     return (
-      <label className="intake-field">
+      <div className="intake-field">
         <span>{field.label}{required ? " *" : ""}</span>
-        <select defaultValue="" name={name} required={required}>
-          <option value="">{required ? "Select one" : "Optional"}</option>
-          {field.options.map((option) => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
-      </label>
+        <PremiumSelect
+          ariaLabel={field.label}
+          name={name}
+          options={field.options}
+          placeholder={required ? "Select one" : "Optional"}
+          required={required}
+        />
+      </div>
     );
   }
 
