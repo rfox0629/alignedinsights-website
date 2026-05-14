@@ -265,13 +265,6 @@ export default function Home() {
                 Aligned Insights brings accounting, payroll infrastructure, dashboards,
                 board-ready reporting, and operational insight into one clear rhythm.
               </p>
-              <div className="hero-ctas">
-                <a className="btn btn-accent" href="#cta">
-                  Schedule a Conversation
-                  <ArrowIcon />
-                </a>
-                <a className="btn btn-ghost" href="#solution">See How It Works</a>
-              </div>
             </div>
             <HeroPreview />
           </div>
