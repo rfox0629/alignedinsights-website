@@ -1,5 +1,7 @@
 "use server";
 
+import { randomUUID } from "crypto";
+
 import { sendReportRequestNotification } from "@/lib/email/report-request-notification";
 import { annualRevenueOptions, lookingForOptions, organizationTypeOptions } from "@/lib/report-request/options";
 import type { ReportRequestState } from "@/lib/report-request/state";
@@ -9,6 +11,7 @@ import type { Database } from "@/lib/supabase/types";
 type InquiryInsert = Database["public"]["Tables"]["aligned_insights_inquiries"]["Insert"];
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const duplicateSubmissionCode = "23505";
 
 function textValue(formData: FormData, key: string, maxLength = 500) {
   const value = formData.get(key);
@@ -38,7 +41,16 @@ function isAllowedOption<T extends readonly string[]>(value: string, options: T)
   return options.includes(value as T[number]);
 }
 
+function isDuplicateSubmissionError(error: { code?: string; message?: string } | null) {
+  return Boolean(
+    error?.code === duplicateSubmissionCode &&
+      (error.message?.includes("submission_token") ||
+        error.message?.includes("aligned_insights_inquiries_submission_token_idx")),
+  );
+}
+
 export async function submitReportRequest(_: ReportRequestState, formData: FormData): Promise<ReportRequestState> {
+  const submissionToken = textValue(formData, "submission_token", 120) || randomUUID();
   const inquiry: InquiryInsert = {
     first_name: textValue(formData, "first_name", 120),
     last_name: textValue(formData, "last_name", 120),
@@ -50,6 +62,7 @@ export async function submitReportRequest(_: ReportRequestState, formData: FormD
     looking_for: arrayValue(formData, "looking_for", 140),
     message: optionalTextValue(formData, "message", 2000),
     source: textValue(formData, "source", 120) || "alignedinsights.tech",
+    submission_token: submissionToken,
   };
 
   const fieldErrors: ReportRequestState["fieldErrors"] = {};
@@ -88,11 +101,16 @@ export async function submitReportRequest(_: ReportRequestState, formData: FormD
       .from("aligned_insights_inquiries")
       .insert(inquiry)
       .select(
-        "id, first_name, last_name, email, phone, organization_name, organization_type, annual_revenue, looking_for, message, source, status, intake_email_sent_at, intake_email_sent_by, created_at, updated_at",
+        "id, first_name, last_name, email, phone, organization_name, organization_type, annual_revenue, looking_for, message, source, status, submission_token, intake_email_sent_at, intake_email_sent_by, created_at, updated_at",
       )
       .single();
 
     if (error || !data) {
+      if (isDuplicateSubmissionError(error)) {
+        console.info("Duplicate report request submission ignored.", { submissionToken });
+        return { success: true };
+      }
+
       console.error("Unable to save Aligned Insights inquiry.", error);
 
       return {
@@ -104,7 +122,10 @@ export async function submitReportRequest(_: ReportRequestState, formData: FormD
     try {
       await sendReportRequestNotification(data);
     } catch (notificationError) {
-      console.error("Inquiry saved, but the email notification failed.", notificationError);
+      console.error("Inquiry saved, but the email notification failed.", {
+        error: notificationError instanceof Error ? notificationError.message : String(notificationError),
+        inquiryId: data.id,
+      });
     }
 
     return { success: true };

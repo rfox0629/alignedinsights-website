@@ -12,6 +12,10 @@ type ContactModalContextValue = {
 
 const ContactModalContext = createContext<ContactModalContextValue | null>(null);
 
+function createSubmissionToken() {
+  return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 export function ContactModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const titleId = useId();
@@ -80,6 +84,7 @@ function ContactModalDialog({
   titleId: string;
 }) {
   const [state, formAction, isPending] = useActionState(submitReportRequest, initialReportRequestState);
+  const [submissionToken] = useState(createSubmissionToken);
 
   return (
     <div
@@ -119,6 +124,7 @@ function ContactModalDialog({
               </div>
               <form action={formAction} className="contact-form" noValidate>
                 <input name="source" type="hidden" value="alignedinsights.tech" />
+                <input name="submission_token" suppressHydrationWarning type="hidden" value={submissionToken} />
                 <div className="contact-form-grid">
                   <FormField error={<FieldError field="first_name" state={state} />} label="First name">
                     <input autoComplete="given-name" name="first_name" required type="text" />

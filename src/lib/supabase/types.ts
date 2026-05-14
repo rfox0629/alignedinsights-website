@@ -17,6 +17,7 @@ export type Database = {
           message: string | null;
           source: string;
           status: string;
+          submission_token: string;
           intake_email_sent_at: string | null;
           intake_email_sent_by: string | null;
           created_at: string;
@@ -35,6 +36,7 @@ export type Database = {
           message?: string | null;
           source?: string;
           status?: string;
+          submission_token?: string;
           intake_email_sent_at?: string | null;
           intake_email_sent_by?: string | null;
           created_at?: string;
@@ -52,6 +54,7 @@ export type Database = {
           message?: string | null;
           source?: string;
           status?: string;
+          submission_token?: string;
           intake_email_sent_at?: string | null;
           intake_email_sent_by?: string | null;
           updated_at?: string;

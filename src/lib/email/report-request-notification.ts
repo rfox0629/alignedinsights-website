@@ -54,32 +54,31 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
     return;
   }
 
-  const notifyEmail = process.env.ALIGNED_INSIGHTS_NOTIFY_EMAIL || "ryan@alignedinsights.tech";
+  const notifyEmail = "ryan@alignedinsights.tech";
   const fromEmail = process.env.RESEND_FROM_EMAIL || "Aligned Insights <reports@alignedinsights.tech>";
   const submittedAt = formatSubmittedAt(inquiry.created_at);
   const fullName = `${inquiry.first_name} ${inquiry.last_name}`.trim();
+  const adminUrl = "https://alignedinsights.tech/admin/inquiries";
   const text = [
-    "New Financial Insights Report request received.",
+    "New Financial Insights Inquiry",
     "",
-    line("Name", fullName),
+    line("Contact name", fullName),
+    line("Organization", inquiry.organization_name),
     line("Email", inquiry.email),
     line("Phone", inquiry.phone),
-    line("Organization name", inquiry.organization_name),
-    line("Organization type", inquiry.organization_type),
-    line("Annual revenue", inquiry.annual_revenue),
-    line("Looking for", inquiry.looking_for),
+    line("Services requested", inquiry.looking_for),
     line("Message", inquiry.message),
     line("Submitted at", submittedAt),
+    "",
+    `Admin: ${adminUrl}`,
   ].join("\n");
 
   const htmlRows: Array<[string, string | string[] | null]> = [
-    ["Name", fullName],
+    ["Contact name", fullName],
+    ["Organization", inquiry.organization_name],
     ["Email", inquiry.email],
     ["Phone", inquiry.phone],
-    ["Organization name", inquiry.organization_name],
-    ["Organization type", inquiry.organization_type],
-    ["Annual revenue", inquiry.annual_revenue],
-    ["Looking for", inquiry.looking_for],
+    ["Services requested", inquiry.looking_for],
     ["Message", inquiry.message],
     ["Submitted at", submittedAt],
   ];
@@ -87,11 +86,12 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
   const { error } = await resend.emails.send({
     from: fromEmail,
     to: notifyEmail,
-    subject: "New Aligned Insights Report Request",
+    subject: "New Financial Insights Inquiry",
     text,
     html: `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #0b1b34; line-height: 1.55;">
-        <h1 style="font-size: 22px; margin: 0 0 12px;">New Financial Insights Report request received.</h1>
+        <h1 style="font-size: 22px; margin: 0 0 8px;">New Financial Insights Inquiry</h1>
+        <p style="color: #4a5b78; font-size: 14px; margin: 0 0 18px;">A new report request was submitted through alignedinsights.tech.</p>
         <table style="border-collapse: collapse; width: 100%; max-width: 680px;">
           <tbody>
             ${htmlRows
@@ -106,6 +106,9 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
               .join("")}
           </tbody>
         </table>
+        <p style="margin: 20px 0 0;">
+          <a href="${adminUrl}" style="color: #1e6bff; font-size: 14px; font-weight: 600; text-decoration: none;">Open admin inquiries</a>
+        </p>
       </div>
     `,
   });
