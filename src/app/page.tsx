@@ -38,16 +38,16 @@ const visibility = [
 ];
 
 const flowSources = [
-  ["Giving", "Inflows"],
-  ["Payroll", "Team support"],
-  ["Bills", "Outflows"],
-  ["Reporting", "Monthly rhythm"],
+  ["Financial activity", "Source input"],
+  ["Team operations", "People rhythm"],
+  ["Expense systems", "Outflow signal"],
+  ["Reporting workflows", "Monthly cadence"],
 ];
 
 const flowOutcomes = [
-  ["Leadership view", "Always current"],
-  ["Clear decisions", "On time"],
-  ["Confident team", "Less reactive"],
+  ["Executive visibility", "Always current"],
+  ["Faster decisions", "Meeting-ready"],
+  ["Operational confidence", "Less reactive"],
 ];
 
 const stack = [
@@ -348,28 +348,49 @@ export default function Home() {
               <div className="flow-layout">
                 <svg aria-hidden="true" className="flow-lines" preserveAspectRatio="none" viewBox="0 0 100 100">
                   <defs>
-                    <linearGradient id="flowLineGradient" x1="0" x2="1" y1="0" y2="0">
-                      <stop offset="0" stopColor="#6ec6ff" stopOpacity="0.15" />
-                      <stop offset="0.55" stopColor="#1e6bff" stopOpacity="0.58" />
-                      <stop offset="1" stopColor="#6ec6ff" stopOpacity="0.18" />
+                    <linearGradient id="flowInputGradient" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0" stopColor="#6ec6ff" stopOpacity="0.16" />
+                      <stop offset="0.72" stopColor="#1e6bff" stopOpacity="0.7" />
+                      <stop offset="1" stopColor="#1e6bff" stopOpacity="0.84" />
+                    </linearGradient>
+                    <linearGradient id="flowOutcomeGradient" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0" stopColor="#1e6bff" stopOpacity="0.82" />
+                      <stop offset="0.68" stopColor="#1e6bff" stopOpacity="0.68" />
+                      <stop offset="1" stopColor="#6ec6ff" stopOpacity="0.42" />
                     </linearGradient>
                   </defs>
-                  <g fill="none" stroke="url(#flowLineGradient)" strokeLinecap="round" strokeWidth="0.24">
-                    <path className="flow-path" d="M16 22 C27 22 34 50 42.5 50" />
-                    <path className="flow-path" d="M16 41 C27 41 34 50 42.5 50" />
-                    <path className="flow-path" d="M16 59 C27 59 34 50 42.5 50" />
-                    <path className="flow-path" d="M16 78 C27 78 34 50 42.5 50" />
-                    <path className="flow-path" d="M57.5 50 C67 50 73 29 84 29" />
-                    <path className="flow-path" d="M57.5 50 C67 50 73 50 84 50" />
-                    <path className="flow-path" d="M57.5 50 C67 50 73 71 84 71" />
+                  <g fill="none" strokeLinecap="round">
+                    <path className="flow-path-base" d="M16 22 C27 22 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path-base" d="M16 41 C27 41 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path-base" d="M16 59 C27 59 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path-base" d="M16 78 C27 78 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path-base" d="M57.5 50 C67 50 73 29 84 29" stroke="url(#flowOutcomeGradient)" />
+                    <path className="flow-path-base flow-path-primary" d="M57.5 50 C67 50 73 50 84 50" stroke="url(#flowOutcomeGradient)" />
+                    <path className="flow-path-base" d="M57.5 50 C67 50 73 71 84 71" stroke="url(#flowOutcomeGradient)" />
+                    <path className="flow-path" d="M16 22 C27 22 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path" d="M16 41 C27 41 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path" d="M16 59 C27 59 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path" d="M16 78 C27 78 34 50 42.5 50" stroke="url(#flowInputGradient)" />
+                    <path className="flow-path" d="M57.5 50 C67 50 73 29 84 29" stroke="url(#flowOutcomeGradient)" />
+                    <path className="flow-path flow-path-primary" d="M57.5 50 C67 50 73 50 84 50" stroke="url(#flowOutcomeGradient)" />
+                    <path className="flow-path" d="M57.5 50 C67 50 73 71 84 71" stroke="url(#flowOutcomeGradient)" />
                   </g>
-                  <circle className="flow-node-pulse" cx="50" cy="18" fill="#1e6bff" r="0.6" />
-                  <circle className="flow-node-pulse" cx="50" cy="82" fill="#1e6bff" r="0.6" />
+                  <g className="flow-particles">
+                    <circle cx="35.5" cy="43" r="0.42" />
+                    <circle cx="39.6" cy="48.8" r="0.44" />
+                    <circle cx="42.3" cy="50" r="0.46" />
+                    <circle cx="57.8" cy="50" r="0.46" />
+                    <circle cx="64.8" cy="50" r="0.44" />
+                    <circle cx="72.5" cy="34" r="0.4" />
+                    <circle cx="72.5" cy="66" r="0.4" />
+                  </g>
+                  <circle className="flow-node-pulse" cx="50" cy="18" fill="#1e6bff" r="0.46" />
+                  <circle className="flow-node-pulse" cx="50" cy="82" fill="#1e6bff" r="0.46" />
                 </svg>
                 <div className="flow-column flow-column-left">
                   {flowSources.map(([item, caption]) => (
                     <div className="flow-node" key={item}>
-                      <span aria-hidden="true" className="flow-mini-icon">+</span>
+                      <span aria-hidden="true" className="flow-mini-icon" />
                       <span className="flow-copy">
                         <strong>{item}</strong>
                         <span>{caption}</span>
@@ -380,12 +401,12 @@ export default function Home() {
                 <div className="flow-hub">
                   <div className="flow-hub-icon">+</div>
                   <strong>Aligned Insights</strong>
-                  <span>OPERATIONS LAYER</span>
+                  <span>Unified Financial Visibility</span>
                 </div>
                 <div className="flow-column flow-column-right">
-                  {flowOutcomes.map(([item, caption], index) => (
+                  {flowOutcomes.map(([item, caption]) => (
                     <div className="flow-outcome" key={item}>
-                      <span aria-hidden="true" className="flow-mini-icon">{index === 1 ? "✓" : "+"}</span>
+                      <span aria-hidden="true" className="flow-mini-icon flow-mini-icon-outcome" />
                       <span className="flow-copy">
                         <strong>{item}</strong>
                         <span>{caption}</span>
