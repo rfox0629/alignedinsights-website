@@ -1,3 +1,4 @@
+import { ContactModalProvider, ContactTrigger } from "@/components/site/contact-modal";
 import { SiteEffects } from "@/components/site/site-effects";
 
 const problems = [
@@ -221,7 +222,7 @@ function DashboardGrid() {
 
 export default function Home() {
   return (
-    <>
+    <ContactModalProvider>
       <SiteEffects />
       <div id="top" />
 
@@ -238,10 +239,10 @@ export default function Home() {
               <a href="#handle">What we handle</a>
             </div>
             <div className="nav-cta">
-              <a className="btn btn-accent btn-sm" href="#cta">
+              <ContactTrigger className="btn btn-accent btn-sm">
                 Schedule a Conversation
                 <ArrowIcon />
-              </a>
+              </ContactTrigger>
             </div>
           </nav>
         </div>
@@ -573,10 +574,10 @@ export default function Home() {
                 build a cleaner financial foundation without adding more work to the people
                 already carrying the load.
               </p>
-              <a className="btn btn-accent reveal" href="mailto:hello@alignedinsights.tech" style={{ fontSize: 15.5, padding: "16px 28px" }}>
-                Start the Conversation
+              <ContactTrigger className="btn btn-accent reveal">
+                Schedule a Conversation
                 <ArrowIcon />
-              </a>
+              </ContactTrigger>
             </div>
           </div>
         </section>
@@ -596,6 +597,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </>
+    </ContactModalProvider>
   );
 }
