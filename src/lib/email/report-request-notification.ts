@@ -55,7 +55,7 @@ export async function sendReportRequestNotification(inquiry: InquiryRow) {
   }
 
   const notifyEmail = "ryan@alignedinsights.tech";
-  const fromEmail = process.env.RESEND_FROM_EMAIL || "Aligned Insights <reports@alignedinsights.tech>";
+  const fromEmail = process.env.RESEND_FROM_EMAIL || "Aligned Insights <onboarding@resend.dev>";
   const submittedAt = formatSubmittedAt(inquiry.created_at);
   const fullName = `${inquiry.first_name} ${inquiry.last_name}`.trim();
   const adminUrl = "https://alignedinsights.tech/admin/inquiries";
