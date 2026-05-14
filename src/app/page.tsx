@@ -37,6 +37,19 @@ const visibility = [
   ["Meeting readiness", "See what needs attention before the meeting starts."],
 ];
 
+const flowSources = [
+  ["Giving", "Inflows"],
+  ["Payroll", "Team support"],
+  ["Bills", "Outflows"],
+  ["Reporting", "Monthly rhythm"],
+];
+
+const flowOutcomes = [
+  ["Leadership view", "Always current"],
+  ["Clear decisions", "On time"],
+  ["Confident team", "Less reactive"],
+];
+
 const stack = [
   ["Accounting Intelligence", "Digits", "Categorization, transaction context, and accounting visibility."],
   ["Payroll & HR", "Gusto", "Payroll infrastructure and people operations support."],
@@ -340,11 +353,34 @@ export default function Home() {
             </div>
             <div className="flow-stage reveal">
               <div className="flow-layout">
-                <div className="flow-column">
-                  {["Giving", "Payroll", "Bills", "Reporting"].map((item) => (
+                <svg aria-hidden="true" className="flow-lines" preserveAspectRatio="none" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="flowLineGradient" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0" stopColor="#6ec6ff" stopOpacity="0.15" />
+                      <stop offset="0.55" stopColor="#1e6bff" stopOpacity="0.58" />
+                      <stop offset="1" stopColor="#6ec6ff" stopOpacity="0.18" />
+                    </linearGradient>
+                  </defs>
+                  <g fill="none" stroke="url(#flowLineGradient)" strokeLinecap="round" strokeWidth="0.24">
+                    <path className="flow-path" d="M16 22 C27 22 34 50 42.5 50" />
+                    <path className="flow-path" d="M16 41 C27 41 34 50 42.5 50" />
+                    <path className="flow-path" d="M16 59 C27 59 34 50 42.5 50" />
+                    <path className="flow-path" d="M16 78 C27 78 34 50 42.5 50" />
+                    <path className="flow-path" d="M57.5 50 C67 50 73 29 84 29" />
+                    <path className="flow-path" d="M57.5 50 C67 50 73 50 84 50" />
+                    <path className="flow-path" d="M57.5 50 C67 50 73 71 84 71" />
+                  </g>
+                  <circle className="flow-node-pulse" cx="50" cy="18" fill="#1e6bff" r="0.6" />
+                  <circle className="flow-node-pulse" cx="50" cy="82" fill="#1e6bff" r="0.6" />
+                </svg>
+                <div className="flow-column flow-column-left">
+                  {flowSources.map(([item, caption]) => (
                     <div className="flow-node" key={item}>
-                      <strong>{item}</strong>
-                      <span>Source signal</span>
+                      <span aria-hidden="true" className="flow-mini-icon">+</span>
+                      <span className="flow-copy">
+                        <strong>{item}</strong>
+                        <span>{caption}</span>
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -353,11 +389,14 @@ export default function Home() {
                   <strong>Aligned Insights</strong>
                   <span>OPERATIONS LAYER</span>
                 </div>
-                <div className="flow-column">
-                  {["Leadership view", "Clear decisions", "Confident team"].map((item) => (
+                <div className="flow-column flow-column-right">
+                  {flowOutcomes.map(([item, caption], index) => (
                     <div className="flow-outcome" key={item}>
-                      <strong>{item}</strong>
-                      <span>Always current</span>
+                      <span aria-hidden="true" className="flow-mini-icon">{index === 1 ? "✓" : "+"}</span>
+                      <span className="flow-copy">
+                        <strong>{item}</strong>
+                        <span>{caption}</span>
+                      </span>
                     </div>
                   ))}
                 </div>
