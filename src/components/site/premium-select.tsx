@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type RefObject, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 type PremiumSelectProps = {
   ariaLabel: string;
@@ -11,6 +11,50 @@ type PremiumSelectProps = {
 };
 
 type PremiumMultiSelectProps = PremiumSelectProps;
+
+function useSelectMenuStyle(isOpen: boolean, triggerRef: RefObject<HTMLButtonElement | null>) {
+  const [menuStyle, setMenuStyle] = useState<CSSProperties>({});
+
+  const updateMenuStyle = useCallback(() => {
+    const trigger = triggerRef.current;
+
+    if (!trigger) return;
+
+    const rect = trigger.getBoundingClientRect();
+    const viewportGap = 14;
+    const menuGap = 8;
+    const preferredHeight = 260;
+    const belowSpace = window.innerHeight - rect.bottom - viewportGap;
+    const aboveSpace = rect.top - viewportGap;
+    const openUp = belowSpace < 190 && aboveSpace > belowSpace;
+    const availableSpace = openUp ? aboveSpace : belowSpace;
+    const maxHeight = Math.max(156, Math.min(preferredHeight, availableSpace - menuGap));
+    const preferredTop = openUp ? rect.top - menuGap - maxHeight : rect.bottom + menuGap;
+    const maxTop = window.innerHeight - viewportGap - maxHeight;
+
+    setMenuStyle({
+      left: rect.left,
+      maxHeight,
+      top: Math.max(viewportGap, Math.min(preferredTop, maxTop)),
+      width: rect.width,
+    });
+  }, [triggerRef]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    updateMenuStyle();
+    window.addEventListener("resize", updateMenuStyle);
+    window.addEventListener("scroll", updateMenuStyle, true);
+
+    return () => {
+      window.removeEventListener("resize", updateMenuStyle);
+      window.removeEventListener("scroll", updateMenuStyle, true);
+    };
+  }, [isOpen, updateMenuStyle]);
+
+  return menuStyle;
+}
 
 export function PremiumSelect({ ariaLabel, name, options, placeholder, required = false }: PremiumSelectProps) {
   const generatedId = useId();
@@ -26,6 +70,7 @@ export function PremiumSelect({ ariaLabel, name, options, placeholder, required 
   const listboxId = `${generatedId}-listbox`;
   const errorId = `${generatedId}-error`;
   const activeOptionId = isOpen && activeIndex >= 0 ? `${generatedId}-option-${activeIndex}` : undefined;
+  const menuStyle = useSelectMenuStyle(isOpen, triggerRef);
 
   const openMenu = useCallback(() => {
     setIsOpen(true);
@@ -73,14 +118,10 @@ export function PremiumSelect({ ariaLabel, name, options, placeholder, required 
     const form = rootRef.current?.closest("form");
     if (!form) return;
 
-    const validateRequiredSelect = (event: SubmitEvent) => {
+    const validateRequiredSelect = () => {
       if (!required || value) return;
 
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
       setValidationError("Please select an option.");
-      triggerRef.current?.focus();
     };
 
     form.addEventListener("submit", validateRequiredSelect, true);
@@ -184,7 +225,7 @@ export function PremiumSelect({ ariaLabel, name, options, placeholder, required 
         </svg>
       </button>
       {isOpen ? (
-        <ul className="premium-select-menu" id={listboxId} role="listbox">
+        <ul className="premium-select-menu" id={listboxId} role="listbox" style={menuStyle}>
           {options.map((option, index) => (
             <li
               aria-selected={option === value}
@@ -223,6 +264,7 @@ export function PremiumMultiSelect({ ariaLabel, name, options, placeholder, requ
   const listboxId = `${generatedId}-listbox`;
   const errorId = `${generatedId}-error`;
   const activeOptionId = isOpen && activeIndex >= 0 ? `${generatedId}-option-${activeIndex}` : undefined;
+  const menuStyle = useSelectMenuStyle(isOpen, triggerRef);
 
   const openMenu = useCallback(() => {
     setIsOpen(true);
@@ -269,14 +311,10 @@ export function PremiumMultiSelect({ ariaLabel, name, options, placeholder, requ
     const form = rootRef.current?.closest("form");
     if (!form) return;
 
-    const validateRequiredSelect = (event: SubmitEvent) => {
+    const validateRequiredSelect = () => {
       if (!required || selectedValues.length) return;
 
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
       setValidationError("Please select at least one option.");
-      triggerRef.current?.focus();
     };
 
     form.addEventListener("submit", validateRequiredSelect, true);
@@ -392,7 +430,7 @@ export function PremiumMultiSelect({ ariaLabel, name, options, placeholder, requ
         </svg>
       </button>
       {isOpen ? (
-        <ul aria-multiselectable="true" className="premium-select-menu" id={listboxId} role="listbox">
+        <ul aria-multiselectable="true" className="premium-select-menu" id={listboxId} role="listbox" style={menuStyle}>
           {options.map((option, index) => {
             const isSelected = selectedSet.has(option);
 
