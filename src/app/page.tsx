@@ -51,11 +51,11 @@ const flowOutcomes = [
 ];
 
 const stack = [
-  ["Accounting Intelligence", "Digits", "Categorization, transaction context, and accounting visibility."],
-  ["Payroll & HR", "Gusto", "Payroll infrastructure and people operations support."],
-  ["Operational Reporting", "Aligned Insights", "Dashboards, board packets, and monthly clarity."],
-  ["Advisory Layer", "Leadership Support", "Experienced operators translating signals into decisions."],
-  ["Automation Layer", "AI Workflows", "Repetitive workflows assisted by intelligent automation."],
+  ["Financial Intelligence", "Signal layer", "Transaction context, categorization logic, and finance visibility organized into one operating model."],
+  ["Payroll Infrastructure", "People layer", "Payroll rhythm, staffing commitments, and people operations support kept aligned with financial decisions."],
+  ["Executive Reporting", "Visibility layer", "Dashboards, board packets, and leadership-ready reporting shaped around the monthly operating cadence."],
+  ["Strategic Oversight", "Decision layer", "Experienced operators translating financial movement into priorities, questions, and next actions."],
+  ["Intelligent Automation", "Workflow layer", "Repetitive financial workflows structured to reduce manual follow up and preserve human judgment."],
 ];
 
 const traditionalCosts = [
@@ -421,7 +421,7 @@ export default function Home() {
               <article className="compare-card featured reveal">
                 <h3>Aligned Insights</h3>
                 <ul className="aligned-list">
-                  {["Accounting", "Payroll", "Dashboards", "Board reporting", "Financial visibility", "AI enabled workflows", "Strategic insight"].map((item) => (
+                  {["Accounting", "Payroll", "Dashboards", "Board reporting", "Financial visibility", "Intelligent automation", "Strategic insight"].map((item) => (
                     <li key={item}>
                       <span className="why-check"><CheckIcon /></span>
                       {item}
@@ -441,17 +441,17 @@ export default function Home() {
           <div className="container">
             <div className="human-grid">
               <div className="human-copy reveal">
-                <span className="section-label">AI + human layer</span>
+                <span className="section-label">Intelligent + human layer</span>
                 <h2>Technology handles the repetition. Experienced operators handle the decisions.</h2>
                 <p className="section-sub" style={{ margin: "18px 0 0", textAlign: "left" }}>
-                  Digits, Gusto, automation workflows, AI assisted categorization,
-                  real-time dashboards, and experienced operational oversight work together
-                  as one calm finance operating layer.
+                  Categorization logic, automation workflows, real-time dashboards,
+                  and experienced operational oversight work together as one calm
+                  finance operating layer.
                 </p>
               </div>
               <div className="human-card reveal">
                 <div className="human-card-grid">
-                  {["AI assisted categorization", "Automation workflows", "Real-time dashboards", "Experienced operational oversight"].map((item, index) => (
+                  {["Assisted categorization", "Automation workflows", "Real-time dashboards", "Experienced operational oversight"].map((item, index) => (
                     <div className="human-row" key={item}>
                       <span>0{index + 1}</span>
                       <div>
@@ -522,18 +522,18 @@ export default function Home() {
         <section className="stack-section section-padded">
           <div className="container">
             <div className="section-head reveal">
-              <span className="section-label">Modern finance stack</span>
-              <h2>A connected stack for growing organizations.</h2>
+              <span className="section-label">Financial operating system</span>
+              <h2>A unified financial operating system for growing organizations.</h2>
               <p className="section-sub">
                 Churches, nonprofits, operators, boards, and mission-driven leadership teams
-                get one organized view across the systems that matter.
+                get one proprietary operating layer for clarity, rhythm, and executive visibility.
               </p>
             </div>
             <div className="stack-grid">
               {stack.map(([layer, tool, copy]) => (
                 <article className="stack-card reveal" key={layer}>
-                  <span className="tag">{layer}</span>
-                  <h3>{tool}</h3>
+                  <span className="tag">{tool}</span>
+                  <h3>{layer}</h3>
                   <p>{copy}</p>
                 </article>
               ))}
