@@ -1473,6 +1473,86 @@ h2 {
   font-weight: 500;
 }
 
+.briefing-perspective {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 54px;
+  padding: 58px 0;
+  border-top: 1px solid var(--line);
+}
+
+.briefing-perspective-head {
+  align-self: start;
+}
+
+.briefing-perspective-head .section-label {
+  margin-bottom: 18px;
+}
+
+.briefing-perspective-head h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-fraunces), "Times New Roman", serif;
+  font-size: clamp(30px, 3.6vw, 46px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.briefing-perspective-card {
+  position: relative;
+  margin: 0;
+  padding: 34px;
+  border: 1px solid var(--line);
+  border-left: 2px solid rgba(30, 107, 255, 0.72);
+  border-radius: 0 22px 22px 0;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow-sm);
+}
+
+.briefing-perspective-card blockquote {
+  margin: 0;
+}
+
+.briefing-perspective-card p {
+  margin: 0 0 18px;
+  color: var(--ink-3);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.briefing-perspective-card .briefing-perspective-lead {
+  color: var(--ink);
+  font-family: var(--font-fraunces), "Times New Roman", serif;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.12;
+}
+
+.briefing-perspective-card figcaption {
+  display: grid;
+  gap: 3px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.briefing-perspective-card figcaption strong {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.briefing-perspective-card figcaption span,
+.briefing-perspective-card figcaption a {
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+.briefing-perspective-card figcaption a {
+  width: fit-content;
+  color: var(--accent);
+}
+
 .briefing-closing {
   margin-top: 36px;
   padding: 42px;
@@ -2514,6 +2594,7 @@ footer {
 
   .briefing-stat-grid,
   .briefing-section,
+  .briefing-perspective,
   .briefing-reference-panel {
     grid-template-columns: 1fr;
   }
@@ -2524,6 +2605,11 @@ footer {
 
   .briefing-section {
     gap: 18px;
+    padding: 42px 0;
+  }
+
+  .briefing-perspective {
+    gap: 22px;
     padding: 42px 0;
   }
 
@@ -2544,6 +2630,15 @@ footer {
 
   .briefing-callouts {
     grid-template-columns: 1fr;
+  }
+
+  .briefing-perspective-card {
+    padding: 26px 22px;
+  }
+
+  .briefing-perspective-card p {
+    font-size: 16px;
+    line-height: 1.65;
   }
 
   .briefing-closing {
@@ -2629,6 +2724,14 @@ footer {
   .briefing-section-body blockquote {
     padding: 22px;
     font-size: clamp(26px, 8vw, 34px);
+  }
+
+  .briefing-perspective-head h2 {
+    font-size: clamp(30px, 9vw, 38px);
+  }
+
+  .briefing-perspective-card .briefing-perspective-lead {
+    font-size: clamp(25px, 7.8vw, 32px);
   }
 
   .briefing-reference-list a {

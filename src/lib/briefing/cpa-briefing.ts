@@ -81,6 +81,21 @@ export const cpaBriefing = {
       ],
     },
   ],
+  leadershipPerspective: {
+    label: "Leadership Perspective",
+    headline: "What ministry leaders are experiencing",
+    quote: [
+      "Ryan Coggins and the team at Aligned Insights helped simplify what had become unnecessarily complicated for our organization. As our church continued to grow, we needed cleaner systems, clearer reporting, and better operational visibility without building a massive internal finance department.",
+      "What stood out was their understanding of both ministry and operations. They helped create a smoother rhythm across reporting, systems, and financial visibility so our team could spend less time managing complexity and more time focused on people and ministry.",
+      "The result was greater clarity, healthier operations, and more confidence in the decisions we were making as a leadership team.",
+    ],
+    signature: {
+      name: "Aaron Cole",
+      role: "Senior Pastor",
+      organization: "Life Church Wisconsin",
+      url: "https://www.lifechurchwi.com/germantown",
+    },
+  },
   close: {
     title: "Clarity is becoming the advantage.",
     body:

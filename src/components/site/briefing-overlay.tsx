@@ -162,6 +162,29 @@ function BriefingOverlay({ closeBriefing, titleId }: { closeBriefing: () => void
           </section>
         ))}
 
+        <section className="briefing-perspective">
+          <div className="briefing-perspective-head">
+            <span className="section-label">{cpaBriefing.leadershipPerspective.label}</span>
+            <h2>{cpaBriefing.leadershipPerspective.headline}</h2>
+          </div>
+          <figure className="briefing-perspective-card">
+            <blockquote>
+              {cpaBriefing.leadershipPerspective.quote.map((paragraph, index) => (
+                <p className={index === 0 ? "briefing-perspective-lead" : undefined} key={paragraph}>
+                  {paragraph}
+                </p>
+              ))}
+            </blockquote>
+            <figcaption>
+              <strong>{cpaBriefing.leadershipPerspective.signature.name}</strong>
+              <span>{cpaBriefing.leadershipPerspective.signature.role}</span>
+              <a href={cpaBriefing.leadershipPerspective.signature.url} rel="noreferrer" target="_blank">
+                {cpaBriefing.leadershipPerspective.signature.organization}
+              </a>
+            </figcaption>
+          </figure>
+        </section>
+
         <section className="briefing-closing">
           <span className="section-label">Final thought</span>
           <h2>{cpaBriefing.close.title}</h2>
