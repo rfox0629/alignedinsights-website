@@ -82,10 +82,10 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
             ) : (
               <>
                 <div className="contact-modal-head">
-                  <span className="section-label">Schedule a Conversation</span>
+                  <span className="section-label">Free Financial Insights Report</span>
                   <h2 id={titleId}>Get a Free Financial Insights Report</h2>
                   <p id={descriptionId}>
-                    Tell us a little about your organization. We&apos;ll follow up with a private intake form so we can prepare a simple financial insights report for your team.
+                    Tell us a little about your organization. We&apos;ll follow up with a private intake form so we can prepare a simple Financial Insights Report for your leadership team.
                   </p>
                 </div>
                 <form className="contact-form" onSubmit={handleSubmit}>
@@ -152,6 +152,9 @@ export function ContactModalProvider({ children }: { children: ReactNode }) {
                     </FormField>
                   </div>
                   <ValidationError className="contact-error contact-form-error" errors={state.errors} />
+                  <p className="contact-support-line">
+                    This report helps uncover opportunities for cleaner reporting, stronger operational visibility, and better financial decision making.
+                  </p>
                   <button className="btn btn-accent contact-submit" disabled={state.submitting} type="submit">
                     {state.submitting ? "Sending..." : "Request My Report"}
                   </button>

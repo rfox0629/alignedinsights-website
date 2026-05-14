@@ -1235,6 +1235,14 @@ h2 {
   background: rgba(179, 38, 30, 0.05);
 }
 
+.contact-support-line {
+  max-width: 560px;
+  margin: -2px 0 0;
+  color: var(--ink-3);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
 .contact-submit {
   justify-self: start;
   padding: 14px 24px;

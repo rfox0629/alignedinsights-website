@@ -240,7 +240,7 @@ export default function Home() {
             </div>
             <div className="nav-cta">
               <ContactTrigger className="btn btn-accent btn-sm">
-                Schedule a Conversation
+                Request a Free Report
                 <ArrowIcon />
               </ContactTrigger>
             </div>
@@ -549,12 +549,12 @@ export default function Home() {
               <span className="section-label reveal">Let&apos;s begin</span>
               <h2 className="reveal">Let your team <em>breathe again.</em></h2>
               <p className="reveal">
-                Aligned Insights helps churches, nonprofits, and mission-driven organizations
-                build a cleaner financial foundation without adding more work to the people
-                already carrying the load.
+                Request a free Financial Insights Report and we&apos;ll follow up with a
+                private intake form so your leadership team can see where reporting,
+                visibility, and monthly rhythm can get cleaner.
               </p>
               <ContactTrigger className="btn btn-accent reveal">
-                Schedule a Conversation
+                Get My Free Report
                 <ArrowIcon />
               </ContactTrigger>
             </div>
