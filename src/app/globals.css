@@ -1035,12 +1035,12 @@ h2 {
 
 .visibility-card strong {
   display: block;
-  margin-top: 24px;
-  color: var(--ink);
+  margin-top: 20px;
+  color: var(--ink-2);
   font-family: var(--font-fraunces), "Times New Roman", serif;
-  font-size: clamp(24px, 2.4vw, 31px);
+  font-size: clamp(19px, 1.55vw, 22px);
   font-weight: 400;
-  line-height: 1.12;
+  line-height: 1.22;
 }
 
 .stack-grid {
@@ -1883,8 +1883,8 @@ footer {
   }
 
   .visibility-card strong {
-    margin-top: 18px;
-    font-size: clamp(24px, 7vw, 29px);
+    margin-top: 16px;
+    font-size: clamp(20px, 5.2vw, 22px);
   }
 
   .flow-stage {
