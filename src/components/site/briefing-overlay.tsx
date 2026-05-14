@@ -212,14 +212,6 @@ function BriefingOverlay({ closeBriefing, titleId }: { closeBriefing: () => void
           </div>
         </section>
 
-        <footer className="briefing-reader-footer">
-          <a className="briefing-action" download href={cpaBriefing.pdfPath}>
-            Download PDF
-          </a>
-          <button className="briefing-action" onClick={copyShareLink} type="button">
-            {shareState === "copied" ? "Link Copied" : "Copy Share Link"}
-          </button>
-        </footer>
       </article>
     </div>
   );

@@ -1265,8 +1265,7 @@ h2 {
   text-transform: uppercase;
 }
 
-.briefing-actions,
-.briefing-reader-footer {
+.briefing-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -1617,11 +1616,6 @@ h2 {
   color: var(--ink-2);
   font-size: 14px;
   font-weight: 500;
-}
-
-.briefing-reader-footer {
-  justify-content: center;
-  margin-top: 46px;
 }
 
 .briefing-route-shell {
