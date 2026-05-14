@@ -37,12 +37,12 @@ const humanLayerCards = [
 ];
 
 const visibility = [
-  ["Cash position", "Know where cash stands before decisions are on the table."],
-  ["Giving trends", "See movement across the month, quarter, and year."],
-  ["Payroll health", "Understand staffing commitments before they become surprises."],
-  ["Runway", "Keep future capacity visible without a spreadsheet hunt."],
-  ["Budget health", "Know where plan and reality are starting to drift."],
-  ["Meeting readiness", "See what needs attention before the meeting starts."],
+  ["Cash position", "Know where cash stands before decisions are on the table.", "$1.42M · Healthy reserves"],
+  ["Giving trends", "See movement across the month, quarter, and year.", "+4.2% · Positive movement"],
+  ["Payroll health", "Understand staffing commitments before they become surprises.", "24 staff · Stable load"],
+  ["Runway", "Keep future capacity visible without a spreadsheet hunt.", "8.4 months · Forward visibility"],
+  ["Budget health", "Know where plan and reality are starting to drift.", "92% aligned · On track"],
+  ["Executive readiness", "See what needs attention before the meeting starts.", "3 items flagged · Ready for review"],
 ];
 
 const flowSources = [
@@ -95,7 +95,7 @@ function Logo() {
         <path d="M29 31 V20 a4 4 0 0 0 -4 -4 H20" fill="none" stroke="#0b1b34" strokeLinecap="round" strokeWidth="2.4" />
         <circle cx="20" cy="20" fill="#1e6bff" r="2.4" />
       </svg>
-      Aligned Insights
+      <span className="logo-text">Aligned Insights</span>
     </span>
   );
 }
@@ -246,7 +246,8 @@ export default function Home() {
             </div>
             <div className="nav-cta">
               <ContactTrigger className="btn btn-accent btn-sm">
-                Request a Free Report
+                <span className="nav-cta-full">Request a Free Report</span>
+                <span className="nav-cta-short">Free Report</span>
                 <ArrowIcon />
               </ContactTrigger>
             </div>
@@ -480,11 +481,11 @@ export default function Home() {
               </p>
             </div>
             <div className="visibility-grid">
-              {visibility.map(([title, copy]) => (
+              {visibility.map(([title, copy, signal]) => (
                 <article className="visibility-card reveal" key={title}>
                   <h3>{title}</h3>
                   <p>{copy}</p>
-                  <strong>Clear</strong>
+                  <strong>{signal}</strong>
                 </article>
               ))}
             </div>
