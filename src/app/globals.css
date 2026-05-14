@@ -511,7 +511,7 @@ h2 {
 
 .flow-column-right {
   justify-self: end;
-  gap: 32px;
+  gap: 58px;
 }
 
 .flow-lines {
@@ -590,11 +590,11 @@ h2 {
 
 .flow-hub::before {
   position: absolute;
-  inset: -50px;
+  inset: -72px;
   z-index: -1;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(30, 107, 255, 0.14) 0 30%, rgba(30, 107, 255, 0.06) 31% 54%, transparent 55%),
+    radial-gradient(circle, rgba(30, 107, 255, 0.14) 0 28%, rgba(30, 107, 255, 0.055) 29% 50%, transparent 51%),
     radial-gradient(circle, rgba(110, 198, 255, 0.1), transparent 68%);
   content: "";
 }
@@ -1627,19 +1627,6 @@ footer {
   }
 }
 
-@keyframes nodePulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.15);
-  }
-}
-
 .reveal {
   opacity: 0;
   transform: translateY(14px);
@@ -1679,16 +1666,6 @@ footer {
   opacity: 0.86;
   stroke-dasharray: 0.55 0.9;
   animation: dashFlow 2.4s linear infinite;
-}
-
-.flow-path-middle {
-  opacity: 0.95;
-}
-
-.flow-node-pulse {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: nodePulse 2.6s ease-in-out infinite;
 }
 
 @media (max-width: 980px) {

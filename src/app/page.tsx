@@ -47,7 +47,6 @@ const flowSources = [
 
 const flowOutcomes = [
   ["Leadership View", "Always current"],
-  ["Clear Decisions", "On time"],
   ["Confident Team", "Less reactive"],
 ];
 
@@ -360,12 +359,9 @@ export default function Home() {
                     <path className="flow-path" d="M16 41 C28 41 34 50 42.5 50" />
                     <path className="flow-path" d="M16 59 C28 59 34 50 42.5 50" />
                     <path className="flow-path" d="M16 78 C28 78 34 50 42.5 50" />
-                    <path className="flow-path" d="M57.5 50 C67 50 73 29 84 29" />
-                    <path className="flow-path flow-path-middle" d="M57.5 50 C67 50 73 50 84 50" />
-                    <path className="flow-path" d="M57.5 50 C67 50 73 71 84 71" />
+                    <path className="flow-path" d="M57.5 50 C67 50 73 38 84 38" />
+                    <path className="flow-path" d="M57.5 50 C67 50 73 62 84 62" />
                   </g>
-                  <circle className="flow-node-pulse" cx="50" cy="18" fill="#1e6bff" r="0.42" />
-                  <circle className="flow-node-pulse" cx="50" cy="82" fill="#1e6bff" r="0.42" />
                 </svg>
                 <div className="flow-column flow-column-left">
                   {flowSources.map(([item, caption]) => (
@@ -384,9 +380,9 @@ export default function Home() {
                   <span>Operations Layer</span>
                 </div>
                 <div className="flow-column flow-column-right">
-                  {flowOutcomes.map(([item, caption], index) => (
+                  {flowOutcomes.map(([item, caption]) => (
                     <div className="flow-outcome" key={item}>
-                      <span aria-hidden="true" className="flow-mini-icon">{index === 1 ? "✓" : "+"}</span>
+                      <span aria-hidden="true" className="flow-mini-icon">+</span>
                       <span className="flow-copy">
                         <strong>{item}</strong>
                         <span>{caption}</span>
