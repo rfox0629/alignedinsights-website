@@ -232,10 +232,10 @@ export default function Home() {
               <Logo />
             </a>
             <div className="nav-links">
-              <a href="#solution">Platform</a>
-              <a href="#handle">What we handle</a>
               <a href="#why">Why this exists</a>
+              <a href="#solution">Platform</a>
               <a href="#dashboard">Dashboard</a>
+              <a href="#handle">What we handle</a>
             </div>
             <div className="nav-cta">
               <a className="btn btn-accent btn-sm" href="#cta">
