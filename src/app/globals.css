@@ -1986,10 +1986,11 @@ h2 {
 }
 
 .briefing-perspective-card .briefing-perspective-lead {
-  color: var(--ink);
-  font-family: var(--font-fraunces), "Times New Roman", serif;
-  font-size: clamp(23px, 2vw, 30px);
-  line-height: 1.22;
+  color: var(--ink-3);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.72;
 }
 
 .briefing-perspective-card figcaption {
@@ -3363,7 +3364,7 @@ footer {
   }
 
   .briefing-perspective-card .briefing-perspective-lead {
-    font-size: clamp(21px, 5.8vw, 24px);
+    font-size: 17px;
   }
 
   .briefing-reference-list a {
