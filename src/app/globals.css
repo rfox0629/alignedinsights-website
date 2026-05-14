@@ -1118,12 +1118,6 @@ h2 {
     #fff;
 }
 
-.briefing-cta-bottom {
-  background:
-    radial-gradient(ellipse 70% 50% at 15% 0%, rgba(110, 198, 255, 0.12), transparent 60%),
-    var(--bg-soft);
-}
-
 .briefing-cta-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 230px auto;

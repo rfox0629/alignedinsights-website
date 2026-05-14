@@ -146,9 +146,9 @@ function HeroPreview() {
   );
 }
 
-function BriefingCta({ placement }: { placement: "mid" | "bottom" }) {
+function BriefingCta() {
   return (
-    <section className={`briefing-cta-section briefing-cta-${placement}`}>
+    <section className="briefing-cta-section">
       <div className="container">
         <div className="briefing-cta-card reveal">
           <div className="briefing-cta-copy">
@@ -475,7 +475,7 @@ export default function Home() {
           </div>
         </section>
 
-        <BriefingCta placement="mid" />
+        <BriefingCta />
 
         <section className="human">
           <div className="container">
@@ -581,8 +581,6 @@ export default function Home() {
             <p className="future-line reveal">Financial operations is just the beginning.</p>
           </div>
         </section>
-
-        <BriefingCta placement="bottom" />
 
         <section className="final-cta" id="cta">
           <div className="container">
