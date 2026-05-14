@@ -19,6 +19,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  applicationName: "Aligned Insights",
   metadataBase: new URL("https://alignedinsights.tech"),
   title: {
     default: "Aligned Insights",
@@ -34,6 +35,15 @@ export const metadata: Metadata = {
     siteName: "Aligned Insights",
     type: "website",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
