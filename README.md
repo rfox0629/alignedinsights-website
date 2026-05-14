@@ -27,9 +27,13 @@ Copy `.env.example` into a local `.env.local` and provide the existing Supabase 
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+ADMIN_PORTAL_PASSWORD=
+RESEND_API_KEY=
+ALIGNED_INSIGHTS_NOTIFY_EMAIL=ryan@alignedinsights.tech
+RESEND_FROM_EMAIL=Aligned Insights <reports@alignedinsights.tech>
 ```
 
-The Supabase helpers use lazy initialization so builds remain compatible with Vercel even before environment values are present. `SUPABASE_SERVICE_ROLE_KEY` is server-only and must never be exposed with a `NEXT_PUBLIC_` prefix.
+The Supabase, admin, and Resend helpers use lazy initialization so builds remain compatible with Vercel even before environment values are present. `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_PORTAL_PASSWORD`, and `RESEND_API_KEY` are server-only and must never be exposed with a `NEXT_PUBLIC_` prefix.
 
 Create a private Financial Insights intake link locally with:
 
@@ -37,7 +41,7 @@ Create a private Financial Insights intake link locally with:
 npm run intake:create-link -- contact@example.com "Organization Name" 2026-06-30
 ```
 
-Admin review screens should be added behind authentication before listing submitted intakes in the app.
+The lightweight admin portal is available at `/admin` and `/admin/inquiries` after setting `ADMIN_PORTAL_PASSWORD`.
 
 ## Structure
 

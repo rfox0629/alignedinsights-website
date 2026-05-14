@@ -3,6 +3,61 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      aligned_insights_inquiries: {
+        Row: {
+          id: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone: string | null;
+          organization_name: string;
+          organization_type: string;
+          annual_revenue: string;
+          looking_for: string | null;
+          message: string | null;
+          source: string;
+          status: string;
+          intake_email_sent_at: string | null;
+          intake_email_sent_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          first_name: string;
+          last_name: string;
+          email: string;
+          phone?: string | null;
+          organization_name: string;
+          organization_type: string;
+          annual_revenue: string;
+          looking_for?: string | null;
+          message?: string | null;
+          source?: string;
+          status?: string;
+          intake_email_sent_at?: string | null;
+          intake_email_sent_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          first_name?: string;
+          last_name?: string;
+          email?: string;
+          phone?: string | null;
+          organization_name?: string;
+          organization_type?: string;
+          annual_revenue?: string;
+          looking_for?: string | null;
+          message?: string | null;
+          source?: string;
+          status?: string;
+          intake_email_sent_at?: string | null;
+          intake_email_sent_by?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       financial_intake_links: {
         Row: {
           id: string;

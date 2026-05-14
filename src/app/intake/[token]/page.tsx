@@ -1,7 +1,16 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { IntakeForm } from "@/app/intake/[token]/intake-form";
 import { getValidatedIntakeLink } from "@/lib/intake/server";
+
+export const metadata: Metadata = {
+  title: "Financial Insights Intake | Aligned Insights",
+  robots: {
+    follow: false,
+    index: false,
+  },
+};
 
 type PageProps = {
   params: Promise<{ token: string }>;
