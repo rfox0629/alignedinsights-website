@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const runtime = "nodejs";
+
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return children;
 }

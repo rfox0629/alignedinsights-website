@@ -1,6 +1,6 @@
 "use server";
 
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHash, createHmac, timingSafeEqual } from "crypto";
 
 import { isInquiryStatus, type AdminInquiry, type InquiryStatus } from "@/lib/admin/inquiries";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -24,6 +24,10 @@ type IntakeFileRow = Database["public"]["Tables"]["financial_intake_files"]["Row
 
 function getAdminPassword() {
   return process.env.ADMIN_PORTAL_PASSWORD?.trim() || "";
+}
+
+function getRawAdminPassword() {
+  return process.env.ADMIN_PORTAL_PASSWORD;
 }
 
 function logMissingEnv(context: string, names: string[]) {
@@ -61,14 +65,28 @@ function getSupabaseAdminSetupWarning() {
 }
 
 function safeCompare(a: string, b: string) {
-  const aBuffer = Buffer.from(a);
-  const bBuffer = Buffer.from(b);
+  const aDigest = createHash("sha256").update(a.trim()).digest();
+  const bDigest = createHash("sha256").update(b.trim()).digest();
 
-  if (aBuffer.length !== bBuffer.length) {
-    return false;
-  }
+  return timingSafeEqual(aDigest, bDigest);
+}
 
-  return timingSafeEqual(aBuffer, bBuffer);
+function logAdminPasswordComparison(submittedPassword: string, rawEnvPassword: string | undefined) {
+  const envPassword = rawEnvPassword ?? "";
+  const trimmedSubmitted = submittedPassword.trim();
+  const trimmedEnv = envPassword.trim();
+
+  console.info("[admin] Password comparison debug", {
+    envPasswordExists: Boolean(rawEnvPassword),
+    envPasswordLength: envPassword.length,
+    nodeEnv: process.env.NODE_ENV || null,
+    submittedPasswordLength: submittedPassword.length,
+    targetEnvironment: process.env.VERCEL_ENV || "local",
+    trimmedLengthsMatch: trimmedSubmitted.length === trimmedEnv.length,
+    trimmedEnvPasswordLength: trimmedEnv.length,
+    trimmedSubmittedPasswordLength: trimmedSubmitted.length,
+    vercelUrlExists: Boolean(process.env.VERCEL_URL),
+  });
 }
 
 function signAdminPayload(payload: string) {
@@ -210,14 +228,18 @@ async function loadIntakeLinksForInquiries(
 }
 
 export async function authenticateAdmin(password: string): Promise<AdminActionResult<{ token: string }>> {
-  const configuredPassword = getAdminPassword();
+  const rawConfiguredPassword = getRawAdminPassword();
+  const configuredPassword = rawConfiguredPassword?.trim() || "";
+  const submittedPassword = password.trim();
+
+  logAdminPasswordComparison(password, rawConfiguredPassword);
 
   if (!configuredPassword) {
     logMissingEnv("admin login", ["ADMIN_PORTAL_PASSWORD"]);
     return { error: "ADMIN_PORTAL_PASSWORD is not configured.", success: false };
   }
 
-  if (!safeCompare(password.trim(), configuredPassword)) {
+  if (!safeCompare(submittedPassword, configuredPassword)) {
     return { error: "Incorrect password.", success: false };
   }
 
